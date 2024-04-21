@@ -80,6 +80,28 @@
             <i class="fas fa-fw fa-dumpster-fire"></i>
             <span>Product</span></a>
     </li>
+    <li class="nav-item @if (Route::is(['cashier.index', 'cashier.sale_info'])) active @endif">
+        <a class="nav-link" href="{{ route('cashier.index') }}">
+            <i class="fas fa-fw fa-cash-register"></i>
+            <span>Kasir</span></a>
+    </li>
+    <li class="nav-item @if (Route::is([])) active @endif">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#saled" aria-expanded="true"
+            aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-shopping-cart"></i>
+            <span>Penjualan</span>
+        </a>
+        <div id="saled" class="collapse @if (Route::is([])) show @endif"
+            aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Penjualan List :</h6>
+                <a class="collapse-item @if (Route::is(['brand.index', 'brand.input_brand', 'brand.edit_brand'])) active @endif"
+                    href="{{ route('brand.index') }}">Cancel</a>
+                <a class="collapse-item @if (Route::is(['categories.index', 'categories.input_category', 'categories.edit_category'])) active @endif"
+                    href="{{ route('categories.index') }}">Return</a>
+            </div>
+        </div>
+    </li>
     <!-- Divider -->
     <hr class="sidebar-divider">
 

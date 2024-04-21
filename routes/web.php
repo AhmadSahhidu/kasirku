@@ -3,9 +3,11 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BalanceCustomerController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CashierController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SaleInfoController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SupplierController;
@@ -98,5 +100,18 @@ Route::group(['middleware' => ['auth']], static function () {
             Route::get('stock_opname', [StockOpnameController::class, 'create'])->name('create_stock_opname');
             Route::post('store_stock_opname', [StockOpnameController::class, 'store'])->name('store_stock_opname');
         });
+    });
+
+    Route::prefix('cashier')->name('cashier.')->group(function () {
+        Route::get('/', [CashierController::class, 'index'])->name('index');
+        Route::post('store-cart', [CashierController::class, 'storeCart'])->name('store_cart');
+        Route::put('edit-qtycart', [CashierController::class, 'editQty'])->name('edit_qty_cart');
+        Route::get('delete-cart', [CashierController::class, 'deleteCart'])->name('delete_cart');
+        Route::post('transaction-cashier', [CashierController::class, 'storeSale'])->name('transaction_cashier');
+
+        //route sale info
+        Route::get('info/{idSale}', [SaleInfoController::class, 'index'])->name('sale_info');
+        Route::get('info/receip-f/{idSale}', [SaleInfoController::class, 'receipF'])->name('sale_info_receipf');
+        Route::get('info/selling-note/{idSale}', [SaleInfoController::class, 'sellingNote'])->name('sale_info_selling_note');
     });
 });
