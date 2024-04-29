@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use App\Observers\SaleObserver;
+use App\Observers\SaleReturnObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Nette\Utils\Strings;
-use PhpParser\Node\Expr\Cast\String_;
 
-class Sales extends Model
+class SaleReturn extends Model
 {
     use HasFactory;
 
@@ -22,11 +20,10 @@ class Sales extends Model
      */
     protected $fillable = [
         'number',
-        'customer_id',
-        'discount',
+        'sale_id',
+        'status',
+        'user_approval',
         'total',
-        'grand_total',
-        'payment_method',
         'user_id',
         'store_id'
     ];
@@ -37,18 +34,18 @@ class Sales extends Model
     public static function generateNumber(): string
     {
         $date = date('Ymd');
-        $numberMax = Sales::max('number');
+        $numberMax = SaleReturn::max('number');
         $numberMax = ($numberMax) ? (int)substr($numberMax, -3) : 0;
         $numberMax++;
 
-        return 'INV' . $date . sprintf('%03d', $numberMax);
+        return 'RET' . $date . sprintf('%03d', $numberMax);
     }
 
 
     public static function boot(): void
     {
         parent::boot();
-        self::observe(SaleObserver::class);
+        self::observe(SaleReturnObserver::class);
     }
 
     public function store(): BelongsTo
@@ -56,23 +53,23 @@ class Sales extends Model
         return $this->belongsTo(Store::class, 'store_id', 'id');
     }
 
+    public function sales(): BelongsTo
+    {
+        return $this->belongsTo(Sales::class, 'sale_id', 'id');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function customer(): BelongsTo
+    public function userApproval(): BelongsTo
     {
-        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+        return $this->belongsTo(User::class, 'user_approval', 'id');
     }
 
-    public function items(): HasMany
+    public function returnItems(): HasMany
     {
-        return $this->hasMany(SaleItems::class, 'sale_id', 'id');
-    }
-
-    public function debt(): BelongsTo
-    {
-        return $this->belongsTo(SaleDebtPayment::class, 'sale_id', 'id');
+        return $this->hasMany(SaleReturnItem::class, 'sale_return_id', 'id');
     }
 }

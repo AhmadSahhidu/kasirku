@@ -85,24 +85,63 @@
             <i class="fas fa-fw fa-cash-register"></i>
             <span>Kasir</span></a>
     </li>
-    <li class="nav-item @if (Route::is([])) active @endif">
+    <li class="nav-item @if (Route::is([
+            'sale_cancel.index',
+            'sale_returns.index',
+            'sale_returns.create_sale_return',
+            'sale_returns.detail_sale_return',
+        ])) active @endif">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#saled" aria-expanded="true"
             aria-controls="collapseTwo">
             <i class="fas fa-fw fa-shopping-cart"></i>
             <span>Penjualan</span>
         </a>
-        <div id="saled" class="collapse @if (Route::is([])) show @endif"
+        <div id="saled" class="collapse @if (Route::is([
+                'sale_cancel.index',
+                'sale_returns.index',
+                'sale_returns.create_sale_return',
+                'sale_returns.detail_sale_return',
+            ])) show @endif"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Penjualan List :</h6>
-                <a class="collapse-item @if (Route::is(['brand.index', 'brand.input_brand', 'brand.edit_brand'])) active @endif"
-                    href="{{ route('brand.index') }}">Cancel</a>
-                <a class="collapse-item @if (Route::is(['categories.index', 'categories.input_category', 'categories.edit_category'])) active @endif"
-                    href="{{ route('categories.index') }}">Return</a>
+                <a class="collapse-item @if (Route::is(['sale_cancel.index'])) active @endif"
+                    href="{{ route('sale_cancel.index') }}">Cancel</a>
+                <a class="collapse-item @if (Route::is(['sale_returns.index', 'sale_returns.create_sale_return', 'sale_returns.detail_sale_return'])) active @endif"
+                    href="{{ route('sale_returns.index') }}">Return</a>
             </div>
         </div>
     </li>
-    <!-- Divider -->
+    <li class="nav-item @if (Route::is([
+            'sale_cancel.index',
+            'sale_returns.index',
+            'sale_returns.create_sale_return',
+            'sale_returns.detail_sale_return',
+        ])) active @endif">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#report" aria-expanded="true"
+            aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-file"></i>
+            <span>Laporan</span>
+        </a>
+        <div id="report" class="collapse @if (Route::is([
+                'sale_cancel.index',
+                'sale_returns.index',
+                'sale_returns.create_sale_return',
+                'sale_returns.detail_sale_return',
+            ])) show @endif"
+            aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Laporan List :</h6>
+                <a class="collapse-item @if (Route::is(['sale_cancel.index'])) active @endif"
+                    href="{{ route('report.report_sales') }}">Laporan Penjualan</a>
+                <a class="collapse-item @if (Route::is(['sale_returns.index', 'sale_returns.create_sale_return', 'sale_returns.detail_sale_return'])) active @endif"
+                    href="{{ route('sale_returns.index') }}">Laporan Jatuh Tempo</a>
+                <a class="collapse-item @if (Route::is(['sale_returns.index', 'sale_returns.create_sale_return', 'sale_returns.detail_sale_return'])) active @endif"
+                    href="{{ route('sale_returns.index') }}">Laporan Laba Rugi</a>
+            </div>
+        </div>
+    </li>
+    {{-- <!-- Divider -->
     <hr class="sidebar-divider">
 
     <!-- Heading -->
@@ -115,7 +154,7 @@
         <a class="nav-link" href="tables.html">
             <i class="fas fa-fw fa-table"></i>
             <span>Tables</span></a>
-    </li>
+    </li> --}}
 
     <hr class="sidebar-divider d-none d-md-block">
     <div class="text-center d-none d-md-inline">

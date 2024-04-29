@@ -27,85 +27,64 @@ if (!function_exists('amountFormat')) {
         return number_format($amount, 2, ',', '.');
     }
 }
-// if (! function_exists('getProduct')) {
-//     function getProduct($productId, $withTrashed = false)
-//     {
-//         return Product::withTrashed($withTrashed)->find($productId);
-//     }
-// }
-if (!function_exists('getUser')) {
-    function getUser($productId)
-    {
-        return User::find($productId);
-    }
-}
-if (!function_exists('getUser')) {
-    function getUser($userId)
-    {
-        return User::find($userId);
-    }
-}
 
-if (!function_exists('set_active')) {
-    function set_active($uri, $output = 'active')
+
+if (!function_exists('paymentMethod')) {
+    function paymentMethod($payment): string
     {
-        if (is_array($uri)) {
-            foreach ($uri as $u) {
-                if (Route::is($u)) {
-                    return $output;
-                }
-            }
+        $name_payment = null;
+        $typePayment = (int) $payment;
+        if ($typePayment === 1) {
+            $name_payment = 'Cash';
+        } else if ($typePayment === 2) {
+            $name_payment = 'Transfer';
+        } else if ($typePayment === 3) {
+            $name_payment = 'Tempo';
         } else {
-            if (Route::is($uri)) {
-                return $output;
-            }
+            $name_payment = 'Balance Customer';
         }
-
-        return '';
+        return $name_payment;
     }
 }
 
-// if (! function_exists('generateProductCode')) {
-//     function generateProductCode($supplierId, $series): string
-//     {
-//         $supplier = Supplier::find($supplierId)->code ?? Supplier::first()->code;
-//         $code = $supplier.getCurrentProductCode().date('my').$series;
-//         incrementProductCode();
 
-//         return $code;
-//     }
-// }
+if (!function_exists('getDataUser')) {
+    function getDataUser($username): string
+    {
+        $user = User::where('username', $username)->first();
+        return $user;
+    }
+}
 
-// if (! function_exists('incrementProductCode')) {
-//     function incrementProductCode(): bool
-//     {
-//         $data = ProductCode::first();
-//         if ($data) {
-//             $iteration = (int) substr($data->amount, -5, 5);
-//             $iteration++;
-//             $iteration = sprintf('%05s', $iteration);
-//             $data->amount = $iteration;
-//             $data->save();
-//         } else {
-//             ProductCode::create([]);
-//         }
+if (!function_exists('statusReturn')) {
+    function statusReturn($status): string
+    {
+        $nameStatus = null;
+        $typeStatus = (int) $status;
+        if ($typeStatus === 1) {
+            $nameStatus = 'Menunggu Konfirmasi';
+        } else if ($typeStatus === 2) {
+            $nameStatus = 'Disetujui';
+        } else {
+            $nameStatus = 'Ditolak';
+        }
+        return $nameStatus;
+    }
+}
 
-//         return true;
-//     }
-// }
-// if (! function_exists('getCurrentProductCOde')) {
-//     function getCurrentProductCode()
-//     {
-//         $code = ProductCode::first();
-//         if (! $code) {
-//             $code = ProductCode::create();
-//         }
-
-//         return $code->amount ? $code->amount : '00001';
-//     }
-// }
-
-
+if (!function_exists('statusDebt')) {
+    function statusDebt($status): string
+    {
+        $nameStatus = null;
+        $typeStatus = (int) $status;
+        if ($typeStatus === 1) {
+            $nameStatus = 'Belum Lunas';
+        } else {
+            $nameStatus = 'Lunas';
+        }
+        return $nameStatus;
+    }
+}
 
 
 if (!function_exists('roleTranslate')) {

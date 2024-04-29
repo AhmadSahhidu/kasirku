@@ -7,7 +7,10 @@ use App\Http\Controllers\CashierController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SaleCancelController;
 use App\Http\Controllers\SaleInfoController;
+use App\Http\Controllers\SaleReturnController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SupplierController;
@@ -113,5 +116,23 @@ Route::group(['middleware' => ['auth']], static function () {
         Route::get('info/{idSale}', [SaleInfoController::class, 'index'])->name('sale_info');
         Route::get('info/receip-f/{idSale}', [SaleInfoController::class, 'receipF'])->name('sale_info_receipf');
         Route::get('info/selling-note/{idSale}', [SaleInfoController::class, 'sellingNote'])->name('sale_info_selling_note');
+    });
+
+    Route::prefix('sale-cancel')->name('sale_cancel.')->group(function () {
+        Route::get('/', [SaleCancelController::class, 'index'])->name('index');
+        Route::post('store-sale-cancel/{idSale}', [SaleCancelController::class, 'cancelTransaction'])->name('cancel_transaction');
+    });
+
+    Route::prefix('sale-returns')->name('sale_returns.')->group(function () {
+        Route::get('/', [SaleReturnController::class, 'index'])->name('index');
+        Route::get('create-sale-return', [SaleReturnController::class, 'create'])->name('create_sale_return');
+        Route::post('process-sale-return', [SaleReturnController::class, 'process'])->name('proses_sale_return');
+        Route::get('detail-sale-return/{idReturn}', [SaleReturnController::class, 'show'])->name('detail_sale_return');
+        Route::post('verify-sale-return', [SaleReturnController::class, 'verifyReturn'])->name('verify_sale_return');
+    });
+
+    Route::prefix('report')->name('report.')->group(function () {
+        Route::get('sales', [ReportController::class, 'reportSales'])->name('report_sales');
+        Route::get('debt', [ReportController::class, 'reportDebt'])->name('report_debt');
     });
 });

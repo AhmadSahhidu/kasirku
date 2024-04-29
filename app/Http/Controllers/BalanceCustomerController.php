@@ -17,7 +17,8 @@ class BalanceCustomerController extends Controller
             // If $balance is null, create a new record
             BalanceCustomer::create(['nominal' => 0, 'customer_id' => $idCustomer]);
         }
-        return view('pages.customer.balance.index', compact('balance'));
+        $history = HistoryBalanceCustomer::where('balance_id', $balance->id)->orderBy('created_at', 'DESC')->get();
+        return view('pages.customer.balance.index', compact('balance', 'history'));
     }
 
     public function deposit(Request $request, $idBalance)
@@ -62,8 +63,6 @@ class BalanceCustomerController extends Controller
                 'balance_id' => $balance->id,
             ]);
             BalanceCustomer::where('id', $balance->id)->update(['nominal' => $nominalAkhir]);
-
-
             FlashData::success_alert('Berhasil melakukan pengeluaran balance');
             return redirect()->route('customer.balance_customer', $balance->customer_id);
         } catch (\Throwable $th) {

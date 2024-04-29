@@ -76,7 +76,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($balance->historyBalance as $index => $items)
+                            @foreach ($history as $index => $items)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $items->number }}</td>

@@ -98,10 +98,30 @@ class CashierService
 
     public function saleInfo(Sales $sale, HttpRequest $request): void
     {
-        SaleInfo::create([
-            'sale_id' => $sale->id,
-            'pay_amount' => $request->nominal,
-            'change' => $request->kembalian
-        ]);
+        if ($sale->payment_method === 4) {
+            SaleInfo::create([
+                'sale_id' => $sale->id,
+                'pay_amount' => $sale->grand_total,
+                'change' => 0
+            ]);
+        } else if ($sale->payment_method === 3) {
+            SaleInfo::create([
+                'sale_id' => $sale->id,
+                'pay_amount' => 0,
+                'change' => 0
+            ]);
+        } else if ($sale->payment_method === 2) {
+            SaleInfo::create([
+                'sale_id' => $sale->id,
+                'pay_amount' => $sale->grand_total,
+                'change' => 0
+            ]);
+        } else {
+            SaleInfo::create([
+                'sale_id' => $sale->id,
+                'pay_amount' => $request->nominal,
+                'change' => $request->kembalian
+            ]);
+        }
     }
 }
