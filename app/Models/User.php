@@ -35,9 +35,9 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
-    // protected $casts = [
-    //     'id' => 'string',
-    // ];
+    protected $casts = [
+        'id' => 'string',
+    ];
 
     public static function boot(): void
     {

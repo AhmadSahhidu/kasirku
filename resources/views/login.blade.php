@@ -26,6 +26,7 @@
 
     <div class="container">
 
+        @include('component.partial.alert')
         <!-- Outer Row -->
         <div class="row justify-content-center">
 

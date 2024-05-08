@@ -8,12 +8,14 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaleCancelController;
 use App\Http\Controllers\SaleInfoController;
 use App\Http\Controllers\SaleReturnController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UserController;
 use App\Models\BalanceCustomer;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +28,7 @@ Route::get('/', static function () {
 })->name('login');
 
 Route::post('actionlogin', [AuthController::class, 'actionlogin'])->name('actionlogin');
+Route::get('actionlogut', [AuthController::class, 'actionLogout'])->name('logout');
 
 Route::get('dashboard', function () {
     return view('pages.dashboard');
@@ -134,5 +137,19 @@ Route::group(['middleware' => ['auth']], static function () {
     Route::prefix('report')->name('report.')->group(function () {
         Route::get('sales', [ReportController::class, 'reportSales'])->name('report_sales');
         Route::get('debt', [ReportController::class, 'reportDebt'])->name('report_debt');
+    });
+
+    Route::prefix('roles')->name('roles.')->group(function () {
+        Route::get('/', [RoleController::class, 'index'])->name('index');
+        Route::get('create', [RoleController::class, 'create'])->name('create_roles');
+        Route::post('store', [RoleController::class, 'store'])->name('store_roles');
+    });
+
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('create', [UserController::class, 'create'])->name('create_users');
+        Route::post('store', [UserController::class, 'store'])->name('store_users');
+        Route::get('akses-user/{idUser}', [UserController::class, 'aksesUser'])->name('akses_user');
+        Route::post('save-permission', [UserController::class, 'savePermission'])->name('save_permission');
     });
 });

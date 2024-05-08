@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\Permission;
+use App\Models\RoleUser;
 use App\Models\User;
+use App\Models\UserPermission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -87,126 +90,41 @@ if (!function_exists('statusDebt')) {
 }
 
 
-if (!function_exists('roleTranslate')) {
-    function roleTranslate($userId)
+if (!function_exists('permissionByGroup')) {
+    function permissionByGroup($group)
     {
-        $roleName = User::find($userId)?->roles()->pluck('name')->toArray()[0];
-        if ($roleName === 'admin') {
-            return 'Admin';
-        }
-        if ($roleName === 'superadmin') {
-            return 'Super Admin';
-        }
-        if ($roleName === 'finance') {
-            return 'Keuangan';
-        }
+        return Permission::where('group', $group)->get();
+    }
+}
 
-        if ($roleName === 'marketing') {
-            return 'Marketing';
-        }
-        if ($roleName === 'cashier') {
-            return 'Kasir';
-        }
-        if ($roleName === 'warehouse') {
-            return 'Gudang';
-        }
-        if ($roleName === 'purchase') {
-            return 'Pembelian';
-        }
+if (!function_exists('checkPermission')) {
+    function checkPermission($permissionId)
+    {
+        $data = UserPermission::where('permission_id', $permissionId)->first();
+        return $data;
+    }
+}
 
-        if ($roleName === 'driver') {
-            return 'Driver';
-        }
-
-        if ($roleName === 'foreman') {
-            return 'Mandor';
-        }
-
-        return '';
+if (!function_exists('validationAkses')) {
+    function validationAkses($aksesname)
+    {
+        $data = UserPermission::query();
+        $data->join('permissions', 'permissions.id', '=', 'user_permissions.permission_id');
+        $data->where('permissions.name', $aksesname);
+        $valid = $data->first();
+        return $valid;
     }
 }
 
 
-if (!function_exists('roleTranslateByName')) {
-    function roleTranslateByName($role)
+if (!function_exists('userRoleName')) {
+    function userRoleName($userId): string
     {
-        if ($role === 'admin') {
-            return 'Admin';
-        }
-        if ($role === 'superadmin') {
-            return 'Super Admin';
-        }
-        if ($role === 'finance') {
-            return 'Keuangan';
-        }
-
-        if ($role === 'marketing') {
-            return 'Marketing';
-        }
-        if ($role === 'cashier') {
-            return 'Kasir';
-        }
-        if ($role === 'warehouse') {
-            return 'Gudang';
-        }
-        if ($role === 'purchase') {
-            return 'Pembelian';
-        }
-
-        if ($role === 'driver') {
-            return 'Driver';
-        }
-
-        if ($role === 'foreman') {
-            return 'Mandor';
-        }
-
-        return '';
-    }
-
-    return '';
-}
-
-if (!function_exists('indonesiaMonths')) {
-    function indonesiaMonths($month): string
-    {
-        if ($month == 1) {
-            return 'Januari';
-        }
-        if ($month == 2) {
-            return 'Februari';
-        }
-        if ($month == 3) {
-            return 'Maret';
-        }
-        if ($month == 4) {
-            return 'April';
-        }
-        if ($month == 5) {
-            return 'Mei';
-        }
-        if ($month == 6) {
-            return 'Juni';
-        }
-        if ($month == 7) {
-            return 'Juli';
-        }
-        if ($month == 8) {
-            return 'Agustus';
-        }
-        if ($month == 9) {
-            return 'September';
-        }
-        if ($month == 10) {
-            return 'Oktober';
-        }
-        if ($month == 11) {
-            return 'November';
-        }
-        if ($month == 12) {
-            return 'Desember';
-        }
-
-        return '';
+        $user = User::where('id', $userId)->first();
+        $data = RoleUser::query();
+        $data->join('roles', 'roles.id', '=', 'role_users.role_id');
+        $data->where('role_users.user_id', $user->id);
+        $roleUser = $data->first();
+        return $roleUser->name;
     }
 }

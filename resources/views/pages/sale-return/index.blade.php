@@ -34,8 +34,8 @@
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $items->number }}</td>
-                                <td>{{ $items->sales?->number ?? '-' }}</td>
-                                <td>{{ $items->sales->customer->name ?? 'Umum' }}</td>
+                                <td>{{ $items->sales_number ?? '-' }}</td>
+                                <td>{{ $items->customer_name ?? 'Umum' }}</td>
                                 <td>{{ $items->total }}</td>
                                 <td>{{ $items->user->name ?? '-' }}</td>
                                 <td>

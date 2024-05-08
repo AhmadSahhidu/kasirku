@@ -225,7 +225,7 @@
                     $subtotal += $item->total;
                 @endphp
             @endforeach
-            {{-- @if ($notadarireturn != null)
+            @if ($notadarireturn != null)
 
                 @foreach ($itemTambahan->items as $item)
                     @php
@@ -264,7 +264,7 @@
                         </td>
                     </tr>
                 @endforeach
-            @endif --}}
+            @endif
             {{-- @if ($sale->reated_id != null)
                 <tr>
                     <td colspan="8">Daftar Barang Return</td>

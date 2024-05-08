@@ -20,7 +20,12 @@ class SaleReturnController extends Controller
 
     public function index()
     {
-        $sale_return = SaleReturn::with('sales', 'store', 'user')->get();
+        $data = SaleReturn::query();
+        $data->select('sale_returns.*', 'customers.name as customer_name', 'sales.number as sales_number');
+        $data->join('sales', 'sales.id', '=', 'sale_returns.sale_id');
+        $data->leftjoin('customers', 'customers.id', '=', 'sales.customer_id');
+        $data->join('stores', 'stores.id', '=', 'sale_returns.store_id');
+        $sale_return = $data->get();
         return view('pages.sale-return.index', compact('sale_return'));
     }
 
