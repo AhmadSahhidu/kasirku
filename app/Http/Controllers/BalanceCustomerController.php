@@ -13,11 +13,14 @@ class BalanceCustomerController extends Controller
     public function index($idCustomer)
     {
         $balance = BalanceCustomer::with('customer', 'historyBalance')->where('customer_id', $idCustomer)->first();
+        $history = null;
         if (!$balance) {
             // If $balance is null, create a new record
             BalanceCustomer::create(['nominal' => 0, 'customer_id' => $idCustomer]);
+        } else {
+            $history = HistoryBalanceCustomer::where('balance_id', $balance->id)->orderBy('created_at', 'DESC')->get();
         }
-        $history = HistoryBalanceCustomer::where('balance_id', $balance->id)->orderBy('created_at', 'DESC')->get();
+
         return view('pages.customer.balance.index', compact('balance', 'history'));
     }
 

@@ -17,17 +17,34 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $product = Product::with('store', 'supplier', 'brand', 'category')->get();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $product = Product::with('store', 'supplier', 'brand', 'category')->get();
+        } else {
+            $userStore = userStore();
+            $stores = Store::where('name', $userStore)->first();
+            $product = Product::with('store', 'supplier', 'brand', 'category')->where('store_id', $stores->id)->get();
+        }
 
         return view('pages.product.index', compact('product'));
     }
 
     public function create()
     {
-        $supplier = Supplier::all();
-        $brand = Brand::all();
-        $store = Store::all();
-        $category = Category::all();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $supplier = Supplier::all();
+            $brand = Brand::all();
+            $store = Store::all();
+            $category = Category::all();
+        } else {
+            $userStore = userStore();
+            $stores = Store::where('name', $userStore)->first();
+            $supplier = Supplier::where('store_id', $stores->id)->get();
+            $brand = Brand::where('store_id', $stores->id)->get();
+            $store = Store::where('id', $stores->id)->get();
+            $category = Category::where('store_id', $stores->id)->get();
+        }
 
         return view('pages.product.create', compact('supplier', 'brand', 'store', 'category'));
     }
@@ -66,10 +83,20 @@ class ProductController extends Controller
     {
         $product = Product::where('id', $idProduct)->first();
 
-        $supplier = Supplier::all();
-        $brand = Brand::all();
-        $store = Store::all();
-        $category = Category::all();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $supplier = Supplier::all();
+            $brand = Brand::all();
+            $store = Store::all();
+            $category = Category::all();
+        } else {
+            $userStore = userStore();
+            $stores = Store::where('name', $userStore)->first();
+            $supplier = Supplier::where('store_id', $stores->id)->get();
+            $brand = Brand::where('store_id', $stores->id)->get();
+            $store = Store::where('id', $stores->id)->get();
+            $category = Category::where('store_id', $stores->id)->get();
+        }
 
         return view('pages.product.edit', compact('supplier', 'brand', 'store', 'category', 'product'));
     }

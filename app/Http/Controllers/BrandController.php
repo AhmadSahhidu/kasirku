@@ -12,14 +12,26 @@ class BrandController extends Controller
 {
     public function index()
     {
-        $brand = Brand::with('store')->get();
-        error_log($brand);
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $brand = Brand::with('store')->get();
+        } else {
+            $userStore = userStore();
+            $stores = Store::where('name', $userStore)->first();
+            $brand = Brand::with('store')->where('store_id', $stores->id)->get();
+        }
         return view('pages.brand.index', compact('brand'));
     }
 
     public function create()
     {
-        $store = Store::all();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $store = Store::all();
+        } else {
+            $userStore = userStore();
+            $store = Store::where('name', $userStore)->get();
+        }
         return view('pages.brand.create', compact('store'));
     }
 
@@ -40,7 +52,13 @@ class BrandController extends Controller
     {
         try {
             $brand = Brand::with('store')->where('id', $idBrand)->first();
-            $store = Store::all();
+            $roleuser = userRoleName();
+            if ($roleuser === 'Super Admin') {
+                $store = Store::all();
+            } else {
+                $userStore = userStore();
+                $store = Store::where('name', $userStore)->get();
+            }
 
             return view('pages.brand.edit', compact('brand', 'store'));
         } catch (\Throwable $th) {

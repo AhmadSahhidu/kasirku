@@ -1,3 +1,9 @@
+@php
+    $aksescreateCategory = validationAkses('create data category');
+    $akseseditCategory = validationAkses('edit data category');
+    $aksesdeleteCategory = validationAkses('delete data category');
+    $roleuser = userRoleName();
+@endphp
 @extends('component.layout.app')
 @push('style')
     <link href="{{ asset('./assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
@@ -6,9 +12,11 @@
     @include('component.partial.alert')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Kategori Produk</h1>
-        <a href="{{ route('categories.input_category') }}"
-            class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                class="fas fa-plus fa-sm text-white-50 mr-1"></i> Tambah Data</a>
+        @if ($aksescreateCategory || $roleuser === 'Super Admin')
+            <a href="{{ route('categories.input_category') }}"
+                class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                    class="fas fa-plus fa-sm text-white-50 mr-1"></i> Tambah Data</a>
+        @endif
     </div>
 
     <div class="card shadow mb-4">
@@ -33,14 +41,18 @@
                                 <td>{{ $items->name }}</td>
                                 <td>{{ $items->store->name ?? '-' }}</td>
                                 <td>
-                                    <a href="{{ route('categories.edit_category', $items->id) }}"
-                                        class="btn btn-sm btn-circle btn-primary" title="Edit Data">
-                                        <i class="fa fa-pen"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-circle btn-danger btnDelete"
-                                        data-item-id="{{ $items->id }}" title="Hapus Data">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
+                                    @if ($akseseditCategory || $roleuser === 'Super Admin')
+                                        <a href="{{ route('categories.edit_category', $items->id) }}"
+                                            class="btn btn-sm btn-circle btn-primary" title="Edit Data">
+                                            <i class="fa fa-pen"></i>
+                                        </a>
+                                    @endif
+                                    @if ($aksesdeleteCategory || $roleuser === 'Super Admin')
+                                        <button type="button" class="btn btn-sm btn-circle btn-danger btnDelete"
+                                            data-item-id="{{ $items->id }}" title="Hapus Data">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    @endif
 
                                 </td>
                             </tr>

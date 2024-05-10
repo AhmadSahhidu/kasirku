@@ -8,6 +8,7 @@ use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Sales;
+use App\Models\Store;
 use App\Services\CashFlowService;
 use App\Services\CashierService;
 use Illuminate\Http\Request;
@@ -22,7 +23,14 @@ class CashierController extends Controller
 
     public function index()
     {
-        $product = Product::with('brand', 'category', 'supplier', 'store')->get();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $product = Product::with('store', 'supplier', 'brand', 'category')->get();
+        } else {
+            $userStore = userStore();
+            $stores = Store::where('name', $userStore)->first();
+            $product = Product::with('store', 'supplier', 'brand', 'category')->where('store_id', $stores->id)->get();
+        }
         $cart = Cart::with('product', 'user')->get();
         $total = 0;
         $customer = Customer::all();
@@ -125,7 +133,7 @@ class CashierController extends Controller
                 'grand_total' => $request->grand_total,
                 'payment_method' => $paymentMethod,
                 'user_id' => auth()->user()->id,
-                'store_id' => '2df52180-9f86-4b69-b8da-a149a9b810c2'
+                'store_id' => $cart->store_id
             ]);
 
             $this->cashierService->createSaleItems($sale);

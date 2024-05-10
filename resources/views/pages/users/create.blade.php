@@ -54,10 +54,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6" id="tmp-select-store">
+                            <div class="col-md-6" id="tmp-select-store" style="display: none">
                                 <div class="form-group">
                                     <label for="store_id">Cabang Store</label>
-                                    <select class="form-control" name="store_id" id="store_select">
+                                    <select class="form-control" style="width:100%" name="store_id" id="store_select">
                                         <option selected disabled>Pilih Cabang Store</option>
                                         @foreach ($store as $items)
                                             <option value="{{ $items->id }}">{{ $items->name }}</option>

@@ -6,8 +6,9 @@
     @include('component.partial.alert')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Laporan Jatuh Tempo</h1>
-        {{-- <a href="{{ route('customer.input_customer') }}" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                class="fas fa-plus fa-sm text-white-50 mr-1"></i> Tambah Data</a> --}}
+        <a href="{{ route('debt_payment.auto_balance_customer') }}"
+            class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                class="fas fa-money-bill fa-sm text-white-50 mr-1"></i> Auto Balance Customer</a>
     </div>
 
     <div class="card shadow mb-4">
@@ -39,7 +40,11 @@
                                 <td>{{ statusDebt($items->status) }}</td>
                                 <td>
                                     @if ($items->status === 1)
-                                        <button class="btn btn-sm btn-success"><i class="fa fa-money"></i>Bayar</button>
+                                        <a href="{{ route('debt_payment.index', $items->id) }}"
+                                            class="btn btn-sm btn-success"><i class="fa fa-money-bill"></i>Bayar</a>
+                                    @else
+                                        <a href="{{ route('debt_payment.index', $items->id) }}"
+                                            class="btn btn-sm btn-success"><i class="fa fa-eye mr-2"></i>Detail</a>
                                     @endif
                                 </td>
                             </tr>

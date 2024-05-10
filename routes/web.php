@@ -6,6 +6,8 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CashierController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DebtPaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
@@ -30,9 +32,8 @@ Route::get('/', static function () {
 Route::post('actionlogin', [AuthController::class, 'actionlogin'])->name('actionlogin');
 Route::get('actionlogut', [AuthController::class, 'actionLogout'])->name('logout');
 
-Route::get('dashboard', function () {
-    return view('pages.dashboard');
-})->name('dashboard')->middleware('auth');
+Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
+Route::get('sales-year', [DashboardController::class, 'reportSalesYear'])->name('sales_year')->middleware('auth');
 
 Route::group(['middleware' => ['auth']], static function () {
 
@@ -143,6 +144,13 @@ Route::group(['middleware' => ['auth']], static function () {
         Route::get('/', [RoleController::class, 'index'])->name('index');
         Route::get('create', [RoleController::class, 'create'])->name('create_roles');
         Route::post('store', [RoleController::class, 'store'])->name('store_roles');
+    });
+
+    Route::prefix('debt-payment')->name('debt_payment.')->group(function () {
+        Route::get('payment/{paymentId}', [DebtPaymentController::class, 'index'])->name('index');
+        Route::post('process-payment/{saledebtId}', [DebtPaymentController::class, 'paymentDebt'])->name('process_payment');
+        Route::get('auto-balance-customer', [DebtPaymentController::class, 'autoBalanceCustomer'])->name('auto_balance_customer');
+        Route::get('proses-auto-balance-customer', [DebtPaymentController::class, 'prosesAutoBalanceCustomer'])->name('proses_auto_balance_customer');
     });
 
     Route::prefix('users')->name('users.')->group(function () {

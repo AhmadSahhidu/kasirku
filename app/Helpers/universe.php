@@ -4,6 +4,7 @@ use App\Models\Permission;
 use App\Models\RoleUser;
 use App\Models\User;
 use App\Models\UserPermission;
+use App\Models\UserStore;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -118,13 +119,25 @@ if (!function_exists('validationAkses')) {
 
 
 if (!function_exists('userRoleName')) {
-    function userRoleName($userId): string
+    function userRoleName(): string
     {
-        $user = User::where('id', $userId)->first();
+        $user = User::where('id', auth()->user()->id)->first();
         $data = RoleUser::query();
         $data->join('roles', 'roles.id', '=', 'role_users.role_id');
         $data->where('role_users.user_id', $user->id);
         $roleUser = $data->first();
         return $roleUser->name;
+    }
+}
+
+if (!function_exists('userStore')) {
+    function userStore(): string
+    {
+        $user = User::where('id', auth()->user()->id)->first();
+        $data = UserStore::query();
+        $data->join('stores', 'stores.id', '=', 'user_stores.store_id');
+        $data->where('user_stores.user_id', $user->id);
+        $stores = $data->first();
+        return $stores->name ?? 'Semua Cabang';
     }
 }

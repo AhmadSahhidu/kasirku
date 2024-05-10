@@ -12,7 +12,14 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $category = Category::with('store')->get();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $category = Category::with('store')->get();
+        } else {
+            $userStore = userStore();
+            $stores = Store::where('name', $userStore)->first();
+            $category = Category::with('store')->where('store_id', $stores->id)->get();
+        }
 
         return view('pages.category.index', compact('category'));
     }
@@ -20,7 +27,13 @@ class CategoryController extends Controller
 
     public function create()
     {
-        $store = Store::all();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $store = Store::all();
+        } else {
+            $userStore = userStore();
+            $store = Store::where('name', $userStore)->get();
+        }
         return view('pages.category.create', compact('store'));
     }
 
@@ -41,7 +54,13 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::with('store')->where('id', $idCategory)->first();
-            $store = Store::all();
+            $roleuser = userRoleName();
+            if ($roleuser === 'Super Admin') {
+                $store = Store::all();
+            } else {
+                $userStore = userStore();
+                $store = Store::where('name', $userStore)->get();
+            }
 
             return view('pages.category.edit', compact('category', 'store'));
         } catch (\Throwable $th) {

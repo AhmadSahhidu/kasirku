@@ -12,14 +12,27 @@ class SupplierController extends Controller
 {
     public function index()
     {
-        $supplier = Supplier::with('store')->get();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $supplier = Supplier::with('store')->get();
+        } else {
+            $userStore = userStore();
+            $stores = Store::where('name', $userStore)->first();
+            $supplier = Supplier::with('store')->where('store_id', $stores->id)->get();
+        }
 
         return view('pages.supplier.index', compact('supplier'));
     }
 
     public function create()
     {
-        $store = Store::all();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $store = Store::all();
+        } else {
+            $userStore = userStore();
+            $store = Store::where('name', $userStore)->get();
+        }
 
         return view('pages.supplier.create', compact('store'));
     }
@@ -40,7 +53,13 @@ class SupplierController extends Controller
     {
         $supplier = Supplier::with('store')->where('id', $idSupplier)->first();
 
-        $store = Store::all();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $store = Store::all();
+        } else {
+            $userStore = userStore();
+            $store = Store::where('name', $userStore)->get();
+        }
 
         return view('pages.supplier.edit', compact('supplier', 'store'));
     }

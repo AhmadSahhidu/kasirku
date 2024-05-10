@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\FlashData;
+use App\Models\BalanceCustomer;
 use App\Models\Customer;
 use App\Models\Store;
 use Illuminate\Http\Request;
@@ -12,14 +13,27 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $customer = Customer::with('store')->get();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $customer = Customer::with('store')->get();
+        } else {
+            $userStore = userStore();
+            $stores = Store::where('name', $userStore)->first();
+            $customer = Customer::with('store')->where('store_id', $stores->id)->get();
+        }
 
         return view('pages.customer.index', compact('customer'));
     }
 
     public function create()
     {
-        $store = Store::all();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $store = Store::all();
+        } else {
+            $userStore = userStore();
+            $store = Store::where('name', $userStore)->get();
+        }
 
         return view('pages.customer.create', compact('store'));
     }
@@ -31,14 +45,15 @@ class CustomerController extends Controller
             $countCustomer = Customer::count();
             $newCustomerCode = 'CD' . ($countCustomer + 1);
 
-            Customer::create([
+            $customer = Customer::create([
+                'id' => generateUuid(),
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'code' => $newCustomerCode,
                 'address' => $request->address,
                 'store_id' => $request->store_id
             ]);
-
+            BalanceCustomer::create(['nominal' => 0, 'customer_id' => $customer->id]);
             FlashData::success_alert('Berhasil menambahkan customer baru');
             return redirect()->route('customer.index');
         } catch (\Throwable $th) {
@@ -50,7 +65,13 @@ class CustomerController extends Controller
     public function show($idCustomer)
     {
         $customer = Customer::with('store')->where('id', $idCustomer)->first();
-        $store = Store::all();
+        $roleuser = userRoleName();
+        if ($roleuser === 'Super Admin') {
+            $store = Store::all();
+        } else {
+            $userStore = userStore();
+            $store = Store::where('name', $userStore)->get();
+        }
 
         return view('pages.customer.edit', compact('customer', 'store'));
     }

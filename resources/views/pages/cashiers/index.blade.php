@@ -1,3 +1,10 @@
+@php
+    $aksesKasir = validationAkses('kasir');
+    $roleuser = userRoleName();
+    if (!$aksesKasir || $roleuser !== 'Super Admin') {
+        return redirect()->route('dashboard');
+    }
+@endphp
 @extends('component.layout.app')
 @push('style')
     <link href="{{ asset('./assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">

@@ -1,3 +1,11 @@
+@php
+    $aksescreateProduct = validationAkses('create data product');
+    $akseseditProduct = validationAkses('edit data product');
+    $aksesdeleteProduct = validationAkses('delete data product');
+    $aksesImportProduct = validationAkses('import data product');
+    $aksesStockOpname = validationAkses('stock opname product');
+    $roleuser = userRoleName();
+@endphp
 @extends('component.layout.app')
 @push('style')
     <link href="{{ asset('./assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
@@ -8,14 +16,20 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Product</h1>
         <div>
-            <button type="button" id="btnImport" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm"><i
-                    class="fas fa-upload fa-sm text-white-50 mr-1"></i> Import Product</button>
-            <a href="{{ route('product.stock_opname.index') }}"
-                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                    class="fas fa-file fa-sm text-white-50 mr-1"></i> Stock Opname</a>
-            <a href="{{ route('product.input_product') }}"
-                class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                    class="fas fa-plus fa-sm text-white-50 mr-1"></i> Tambah Data</a>
+            @if ($aksesImportProduct || $roleuser === 'Super Admin')
+                <button type="button" id="btnImport" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm"><i
+                        class="fas fa-upload fa-sm text-white-50 mr-1"></i> Import Product</button>
+            @endif
+            @if ($aksesStockOpname || $roleuser === 'Super Admin')
+                <a href="{{ route('product.stock_opname.index') }}"
+                    class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                        class="fas fa-file fa-sm text-white-50 mr-1"></i> Stock Opname</a>
+            @endif
+            @if ($aksescreateProduct || $roleuser === 'Super Admin')
+                <a href="{{ route('product.input_product') }}"
+                    class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                        class="fas fa-plus fa-sm text-white-50 mr-1"></i> Tambah Data</a>
+            @endif
         </div>
 
     </div>
@@ -58,14 +72,18 @@
                                 <td>{{ $items->category->name ?? '-' }}</td>
                                 <td>{{ $items->supplier->name ?? '-' }}</td>
                                 <td>
-                                    <a href="{{ route('product.edit_product', $items->id) }}"
-                                        class="btn btn-sm btn-circle btn-primary" title="Edit Data">
-                                        <i class="fa fa-pen"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-circle btn-danger btnDelete"
-                                        data-item-id="{{ $items->id }}" title="Hapus Data">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
+                                    @if ($akseseditProduct || $roleuser === 'Super Admin')
+                                        <a href="{{ route('product.edit_product', $items->id) }}"
+                                            class="btn btn-sm btn-circle btn-primary" title="Edit Data">
+                                            <i class="fa fa-pen"></i>
+                                        </a>
+                                    @endif
+                                    @if ($aksesdeleteProduct || $roleuser === 'Super Admin')
+                                        <button type="button" class="btn btn-sm btn-circle btn-danger btnDelete"
+                                            data-item-id="{{ $items->id }}" title="Hapus Data">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    @endif
 
                                 </td>
                             </tr>

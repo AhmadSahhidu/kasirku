@@ -1,3 +1,8 @@
+@php
+    $aksesdeposit = validationAkses('input deposit balance customer');
+    $aksespengeluaran = validationAkses('input pengeluaran balance customer');
+    $roleuser = userRoleName();
+@endphp
 @extends('component.layout.app')
 @push('style')
     <link href="{{ asset('./assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
@@ -9,10 +14,16 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Balance Customer</h1>
         <div>
-            <button type="button" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm" id="btnPengeluaran"><i
-                    class="fas fa-money-bill fa-sm text-white-50 mr-1"></i> Pengeluaran</button>
-            <button type="button" id="btnDeposit" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                    class="fas fa-money-bill fa-sm text-white-50 mr-1"></i> Deposit</button>
+            @if ($aksesdeposit || $roleuser === 'Super Admin')
+                <button type="button" id="btnDeposit" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                        class="fas fa-money-bill fa-sm text-white-50 mr-1"></i> Deposit</button>
+            @endif
+            @if ($aksespengeluaran || $roleuser === 'Super Admin')
+                <button type="button" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm" id="btnPengeluaran"><i
+                        class="fas fa-money-bill fa-sm text-white-50 mr-1"></i> Pengeluaran</button>
+            @endif
+
+
         </div>
     </div>
     <div class="row">

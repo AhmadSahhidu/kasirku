@@ -1,3 +1,7 @@
+@php
+    $aksesStockOpname = validationAkses('stock opname product');
+    $roleuser = userRoleName();
+@endphp
 @extends('component.layout.app')
 @push('style')
     <link href="{{ asset('./assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
@@ -7,11 +11,12 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Stok Opname</h1>
         <div>
-            <a href="{{ route('product.stock_opname.create_stock_opname') }}"
-                class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                    class="fas fa-plus fa-sm text-white-50 mr-1"></i> Lakukan Stok Opname</a>
+            @if ($aksesStockOpname || $roleuser === 'Super Admin')
+                <a href="{{ route('product.stock_opname.create_stock_opname') }}"
+                    class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                        class="fas fa-plus fa-sm text-white-50 mr-1"></i> Lakukan Stok Opname</a>
+            @endif
         </div>
-
     </div>
 
     <div class="card shadow mb-4">
