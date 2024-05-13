@@ -7,6 +7,7 @@ use App\Models\BalanceCustomer;
 use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Product;
+use App\Models\RequestDiskon;
 use App\Models\Sales;
 use App\Models\Store;
 use App\Services\CashFlowService;
@@ -23,7 +24,11 @@ class CashierController extends Controller
 
     public function index()
     {
+        $aksesKasir = validationAkses('kasir');
         $roleuser = userRoleName();
+        if (!$aksesKasir && $roleuser != 'Super Admin') {
+            return redirect()->route('dashboard');
+        }
         if ($roleuser === 'Super Admin') {
             $product = Product::with('store', 'supplier', 'brand', 'category')->get();
         } else {
@@ -31,13 +36,15 @@ class CashierController extends Controller
             $stores = Store::where('name', $userStore)->first();
             $product = Product::with('store', 'supplier', 'brand', 'category')->where('store_id', $stores->id)->get();
         }
+
+        $diskon = RequestDiskon::where(['sale_id' => null, 'user_id' => auth()->user()->id])->first();
         $cart = Cart::with('product', 'user')->get();
         $total = 0;
         $customer = Customer::all();
         foreach ($cart as $items) {
             $total += $items->product->selling_price * $items->qty;
         }
-        return view('pages.cashiers.index', compact('product', 'cart', 'total', 'customer'));
+        return view('pages.cashiers.index', compact('product', 'cart', 'total', 'customer', 'diskon'));
     }
 
     public function storeCart(Request $request)
@@ -115,6 +122,8 @@ class CashierController extends Controller
                 return redirect()->route('cashier.index');
             }
 
+
+
             $paymentMethod = (int) $request->payment_method;
             if ($paymentMethod === 4) {
                 $balanceCustomer = BalanceCustomer::where('customer_id', $request->customer_id)->first();
@@ -129,12 +138,18 @@ class CashierController extends Controller
             $sale = Sales::create([
                 'id' => generateUuid(),
                 'customer_id' => $request->customer_id,
-                'total' => $request->grand_total,
+                'total' => $request->total,
                 'grand_total' => $request->grand_total,
+                'discount' => $request->diskon ?? null,
                 'payment_method' => $paymentMethod,
                 'user_id' => auth()->user()->id,
                 'store_id' => $cart->store_id
             ]);
+
+            $diskon = RequestDiskon::where(['sale_id' => null, 'user_id' => auth()->user()->id])->first();
+            if ($diskon !== null) {
+                RequestDiskon::where(['sale_id' => null, 'user_id' => auth()->user()->id])->update(['sale_id' => $sale->id]);
+            }
 
             $this->cashierService->createSaleItems($sale);
             $this->cashierService->historyStockProduct($sale);

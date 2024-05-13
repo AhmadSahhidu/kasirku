@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DebtPaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RequestDiskonController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaleCancelController;
 use App\Http\Controllers\SaleInfoController;
@@ -112,6 +113,7 @@ Route::group(['middleware' => ['auth']], static function () {
     Route::prefix('cashier')->name('cashier.')->group(function () {
         Route::get('/', [CashierController::class, 'index'])->name('index');
         Route::post('store-cart', [CashierController::class, 'storeCart'])->name('store_cart');
+        Route::post('request-discount', [RequestDiskonController::class, 'requestDiskon'])->name('request_discount');
         Route::put('edit-qtycart', [CashierController::class, 'editQty'])->name('edit_qty_cart');
         Route::get('delete-cart', [CashierController::class, 'deleteCart'])->name('delete_cart');
         Route::post('transaction-cashier', [CashierController::class, 'storeSale'])->name('transaction_cashier');
@@ -151,6 +153,11 @@ Route::group(['middleware' => ['auth']], static function () {
         Route::post('process-payment/{saledebtId}', [DebtPaymentController::class, 'paymentDebt'])->name('process_payment');
         Route::get('auto-balance-customer', [DebtPaymentController::class, 'autoBalanceCustomer'])->name('auto_balance_customer');
         Route::get('proses-auto-balance-customer', [DebtPaymentController::class, 'prosesAutoBalanceCustomer'])->name('proses_auto_balance_customer');
+    });
+
+    Route::prefix('diskon')->name('diskon.')->group(function () {
+        Route::get('confirm-diskon/{diskonId}', [RequestDiskonController::class, 'confirmDiskon'])->name('confirm_diskon');
+        Route::post('store-diskon/{diskonId}', [RequestDiskonController::class, 'storeDiskon'])->name('store_diskon');
     });
 
     Route::prefix('users')->name('users.')->group(function () {

@@ -113,6 +113,7 @@
                 <span>Kasir</span></a>
         </li>
     @endif
+
     @php
         $aksesviewCancel = validationAkses('view data transaksi pembatalan');
         $aksesviewReturn = validationAkses('view data transaksi pengembalian');
@@ -145,6 +146,38 @@
                     @if ($aksesviewReturn || $roleuser === 'Super Admin')
                         <a class="collapse-item @if (Route::is(['sale_returns.index', 'sale_returns.create_sale_return', 'sale_returns.detail_sale_return'])) active @endif"
                             href="{{ route('sale_returns.index') }}">Return</a>
+                    @endif
+                </div>
+            </div>
+        </li>
+    @endif
+    @php
+        $aksesviewArusKas = validationAkses('view data arus kas');
+    @endphp
+    @if ($aksesviewArusKas || $roleuser === 'Super Admin')
+        <li class="nav-item @if (Route::is([
+                'sale_cancel.index',
+                'sale_returns.index',
+                'sale_returns.create_sale_return',
+                'sale_returns.detail_sale_return',
+            ])) active @endif">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#money"
+                aria-expanded="true" aria-controls="collapseTwo">
+                <i class="fas fa-fw fa-shopping-cart"></i>
+                <span>Keuangan</span>
+            </a>
+            <div id="money" class="collapse @if (Route::is([
+                    'sale_cancel.index',
+                    'sale_returns.index',
+                    'sale_returns.create_sale_return',
+                    'sale_returns.detail_sale_return',
+                ])) show @endif"
+                aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Keuangan List :</h6>
+                    @if ($aksesviewArusKas || $roleuser === 'Super Admin')
+                        <a class="collapse-item @if (Route::is(['sale_cancel.index'])) active @endif"
+                            href="{{ route('sale_cancel.index') }}">Arus Kas</a>
                     @endif
                 </div>
             </div>

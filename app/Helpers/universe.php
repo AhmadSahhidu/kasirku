@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\Permission;
+use App\Models\RequestDiskonNotification;
 use App\Models\RoleUser;
+use App\Models\Store;
 use App\Models\User;
 use App\Models\UserPermission;
 use App\Models\UserStore;
@@ -139,5 +141,52 @@ if (!function_exists('userStore')) {
         $data->where('user_stores.user_id', $user->id);
         $stores = $data->first();
         return $stores->name ?? 'Semua Cabang';
+    }
+}
+
+if (!function_exists('notifDiskon')) {
+    function notifDiskon(): string
+    {
+        $userRoleName = userRoleName();
+        if ($userRoleName === 'Super Admin') {
+            $countDiskon = RequestDiskonNotification::where('readed', 0)->count();
+        } else {
+            $store = Store::where('name', userStore())->first();
+            $countDiskon = RequestDiskonNotification::where(['store_id' => $store->id, 'readed' => 0])->count();
+        }
+
+
+        return $countDiskon;
+    }
+}
+
+if (!function_exists('dataDiskon')) {
+    function dataDiskon()
+    {
+        $userRoleName = userRoleName();
+        if ($userRoleName === 'Super Admin') {
+            $diskon = RequestDiskonNotification::where('readed', 0)->get();
+        } else {
+            $store = Store::where('name', userStore())->first();
+            $diskon = RequestDiskonNotification::where(['store_id' => $store->id, 'readed' => 0])->get();
+        }
+
+        return $diskon;
+    }
+}
+
+if (!function_exists('statusDiskon')) {
+    function statusDiskon($status): string
+    {
+        if ($status === 1) {
+            $nameStatus = 'Menunggu Konfirmasi';
+        } else if ($status === 2) {
+            $nameStatus = 'Disetujui';
+        } else if ($status === 3) {
+            $nameStatus = 'Ditolak';
+        } else {
+            $nameStatus = '';
+        }
+        return $nameStatus;
     }
 }

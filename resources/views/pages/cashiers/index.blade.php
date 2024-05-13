@@ -1,9 +1,6 @@
 @php
-    $aksesKasir = validationAkses('kasir');
+    $aksesKasir = validationAkses('Kasir');
     $roleuser = userRoleName();
-    if (!$aksesKasir || $roleuser !== 'Super Admin') {
-        return redirect()->route('dashboard');
-    }
 @endphp
 @extends('component.layout.app')
 @push('style')
@@ -13,6 +10,7 @@
     @include('component.partial.alert')
     @include('component.modal.list-product')
     @include('component.modal.edit-keranjang')
+    @include('component.modal.request-diskon')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Kasir</h1>
     </div>
@@ -96,8 +94,6 @@
                                     </td>
                                 </tr>
                             @endforeach
-
-
                         </tbody>
                     </table>
                 </div>
@@ -143,11 +139,39 @@
 
                             </select>
                         </div>
+                        <div class="form-group text-right">
+                            @if ($diskon === null)
+                                <button type="button" id="btnRequestDiskon" class="btn btn-sm btn-primary"><i
+                                        class="fa fa-tag mr-2"></i>Request
+                                    Diskon</button>
+                            @else
+                                <div class="">Diskon : <span
+                                        class="btn btn-primary btn-sm">{{ statusDiskon($diskon->status) }}</span></div>
+                            @endif
+                        </div>
                         <div class="form-group">
-                            <label>Total yang harus dibayar</label>
-                            <input type="text" class="form-control" name="grand_total" id="grand_total"
+                            <label>Total</label>
+                            <input type="text" class="form-control" name="total" id="total"
                                 value="{{ $total }}" readonly />
                         </div>
+                        @if ($diskon !== null)
+                            <div class="form-group" id="inp-nominal">
+                                <label>Diskon</label>
+                                <input type="text" class="form-control" id="diskon" name="diskon"
+                                    value="{{ $diskon->amount_discount }}" readonly required />
+                            </div>
+                            <div class="form-group">
+                                <label>Total yang harus dibayar</label>
+                                <input type="text" class="form-control" name="grand_total" id="grand_total"
+                                    value="{{ $total - $diskon->amount_discount }}" readonly />
+                            </div>
+                        @else
+                            <div class="form-group">
+                                <label>Total yang harus dibayar</label>
+                                <input type="text" class="form-control" name="grand_total" id="grand_total"
+                                    value="{{ $total }}" readonly />
+                            </div>
+                        @endif
                         <div class="form-group" id="inp-nominal">
                             <label>Nominal</label>
                             <input type="text" class="form-control" id="nominal" name="nominal" required />
@@ -184,6 +208,9 @@
                 $("#btnSearch").on('click', function() {
                     $("#listProduct").modal('show');
                 });
+                $("#btnRequestDiskon").on('click', function() {
+                    $('#requestDiskon').modal('show');
+                })
                 $("#closeModal").on('click', function() {
                     $("#listProduct").modal('hide');
                 });
