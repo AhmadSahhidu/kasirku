@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use App\Observers\CashFlowObserver;
+use App\Observers\BalanceStoreHistoryObserver;
+use App\Observers\BalanceStoreObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CashFlow extends Model
+class BalanceStoreHistory extends Model
 {
     use HasFactory;
+
 
     /**
      * The attributes that are mass assignable.
@@ -17,13 +18,13 @@ class CashFlow extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'number',
-        'type_cash',
-        'type_cash_out',
+        'balance_store_id',
+        'balance_start',
+        'balance_end',
         'amount',
-        'note',
-        'store_id',
-        'cash_id'
+        'type',
+        'tgl',
+        'description'
     ];
     protected $casts = [
         'id' => 'string',
@@ -32,11 +33,6 @@ class CashFlow extends Model
     public static function boot(): void
     {
         parent::boot();
-        self::observe(CashFlowObserver::class);
-    }
-
-    public function store(): BelongsTo
-    {
-        return $this->belongsTo(Store::class, 'store_id', 'id');
+        self::observe(BalanceStoreHistoryObserver::class);
     }
 }

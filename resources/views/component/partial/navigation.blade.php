@@ -155,29 +155,46 @@
         $aksesviewArusKas = validationAkses('view data arus kas');
     @endphp
     @if ($aksesviewArusKas || $roleuser === 'Super Admin')
-        <li class="nav-item @if (Route::is([
-                'sale_cancel.index',
-                'sale_returns.index',
-                'sale_returns.create_sale_return',
-                'sale_returns.detail_sale_return',
-            ])) active @endif">
+        <li class="nav-item @if (Route::is(['cash.index'])) active @endif">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#money"
                 aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-fw fa-shopping-cart"></i>
                 <span>Keuangan</span>
             </a>
-            <div id="money" class="collapse @if (Route::is([
-                    'sale_cancel.index',
-                    'sale_returns.index',
-                    'sale_returns.create_sale_return',
-                    'sale_returns.detail_sale_return',
-                ])) show @endif"
+            <div id="money" class="collapse @if (Route::is(['cash.index'])) show @endif"
                 aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Keuangan List :</h6>
                     @if ($aksesviewArusKas || $roleuser === 'Super Admin')
-                        <a class="collapse-item @if (Route::is(['sale_cancel.index'])) active @endif"
-                            href="{{ route('sale_cancel.index') }}">Arus Kas</a>
+                        <a class="collapse-item @if (Route::is(['cash.index'])) active @endif"
+                            href="{{ route('cash.index') }}">Arus Kas</a>
+                    @endif
+                    @if ($aksesviewArusKas || $roleuser === 'Super Admin')
+                        <a class="collapse-item @if (Route::is(['cash.balance_store'])) active @endif"
+                            href="{{ route('cash.balance_store') }}">Balance Store</a>
+                    @endif
+                </div>
+            </div>
+        </li>
+    @endif
+    @if ($aksesviewArusKas || $roleuser === 'Super Admin')
+        <li class="nav-item @if (Route::is(['purchase.index'])) active @endif">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#purchase"
+                aria-expanded="true" aria-controls="collapseTwo">
+                <i class="fas fa-fw fa-shopping-cart"></i>
+                <span>Pembelian</span>
+            </a>
+            <div id="purchase" class="collapse @if (Route::is(['purchase.index'])) show @endif"
+                aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Pembelian List :</h6>
+                    @if ($aksesviewArusKas || $roleuser === 'Super Admin')
+                        <a class="collapse-item @if (Route::is(['purchase.index'])) active @endif"
+                            href="{{ route('purchase.index') }}">Pembelian Order</a>
+                    @endif
+                    @if ($aksesviewArusKas || $roleuser === 'Super Admin')
+                        <a class="collapse-item @if (Route::is(['purchase.list_order_pembelian'])) active @endif"
+                            href="{{ route('purchase.list_order_pembelian') }}">List Order Pembelian</a>
                     @endif
                 </div>
             </div>
@@ -189,21 +206,17 @@
         $aksesviewReportLabaRugi = validationAkses('Laporan transaksi laba rugi');
     @endphp
     @if ($aksesviewReportSales || $aksesviewReportDebt || $aksesviewReportLabaRugi || $roleuser === 'Super Admin')
-        <li class="nav-item @if (Route::is([
-                'sale_cancel.index',
-                'sale_returns.index',
-                'sale_returns.create_sale_return',
-                'sale_returns.detail_sale_return',
-            ])) active @endif">
+        <li class="nav-item @if (Route::is(['report.report_sales', 'report.report_debt', 'report.report_cash_flow'])) active @endif">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#report"
                 aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-fw fa-file"></i>
                 <span>Laporan</span>
             </a>
-            <div id="report" class="collapse @if (Route::is(['report.report_sales', 'report.report_debt'])) show @endif"
+            <div id="report" class="collapse @if (Route::is(['report.report_sales', 'report.report_debt', 'report.report_cash_flow'])) show @endif"
                 aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Laporan List :</h6>
+
                     @if ($aksesviewReportSales || $roleuser === 'Super Admin')
                         <a class="collapse-item @if (Route::is(['report.report_sales'])) active @endif"
                             href="{{ route('report.report_sales') }}">Laporan Penjualan</a>
@@ -214,8 +227,8 @@
                             href="{{ route('report.report_debt') }}">Laporan Jatuh Tempo</a>
                     @endif
                     @if ($aksesviewReportLabaRugi || $roleuser === 'Super Admin')
-                        <a class="collapse-item @if (Route::is(['sale_returns.index', 'sale_returns.create_sale_return', 'sale_returns.detail_sale_return'])) active @endif"
-                            href="{{ route('sale_returns.index') }}">Laporan Laba Rugi</a>
+                        <a class="collapse-item @if (Route::is(['report.report_cash_flow'])) active @endif"
+                            href="{{ route('report.report_cash_flow') }}">Laporan Laba Rugi</a>
                     @endif
                 </div>
             </div>

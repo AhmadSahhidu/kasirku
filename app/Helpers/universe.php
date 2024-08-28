@@ -62,6 +62,17 @@ if (!function_exists('getDataUser')) {
     }
 }
 
+if (!function_exists('statusPurchaseOrder')) {
+    function statusPurchaseOrder($data): string
+    {
+        if ($data === 1) {
+            return 'Belum lunas';
+        } else {
+            return 'Lunas';
+        }
+    }
+}
+
 if (!function_exists('statusReturn')) {
     function statusReturn($status): string
     {
@@ -188,5 +199,33 @@ if (!function_exists('statusDiskon')) {
             $nameStatus = '';
         }
         return $nameStatus;
+    }
+}
+
+if (!function_exists('jenisCash')) {
+    function jenisCash($cash): string
+    {
+        if ($cash === 1) {
+            $nameCash = 'Pemasukan';
+        } else if ($cash === 2) {
+            $nameCash = 'Pengeluaran';
+        } else {
+            $nameCash = '';
+        }
+        return $nameCash;
+    }
+}
+
+if (!function_exists('jenisCashOut')) {
+    function jenisCashOut($cash): string
+    {
+        if ($cash === 1) {
+            $nameCash = 'Modal';
+        } else if ($cash === 2) {
+            $nameCash = 'Operasional';
+        } else {
+            $nameCash = '-';
+        }
+        return $nameCash;
     }
 }

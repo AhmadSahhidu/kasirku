@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Observers\CashFlowObserver;
+use App\Observers\PurchaseOrderPaymentObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CashFlow extends Model
+class PurchaseOrderPayment extends Model
 {
     use HasFactory;
 
@@ -17,13 +17,10 @@ class CashFlow extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'number',
-        'type_cash',
-        'type_cash_out',
-        'amount',
-        'note',
-        'store_id',
-        'cash_id'
+        'purchase_order_id',
+        'sumber_dana',
+        'amount_purchase_order',
+        'amount'
     ];
     protected $casts = [
         'id' => 'string',
@@ -32,11 +29,11 @@ class CashFlow extends Model
     public static function boot(): void
     {
         parent::boot();
-        self::observe(CashFlowObserver::class);
+        self::observe(PurchaseOrderPaymentObserver::class);
     }
 
-    public function store(): BelongsTo
+    public function order(): BelongsTo
     {
-        return $this->belongsTo(Store::class, 'store_id', 'id');
+        return $this->belongsTo(PurchaseOrder::class, 'purchase_order_id', 'id');
     }
 }

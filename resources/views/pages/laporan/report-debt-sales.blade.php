@@ -41,7 +41,51 @@
                                 <td>
                                     @if ($items->status === 1)
                                         <a href="{{ route('debt_payment.index', $items->id) }}"
-                                            class="btn btn-sm btn-success"><i class="fa fa-money-bill"></i>Bayar</a>
+                                            class="btn btn-sm btn-success"><i class="fa fa-money-bill mr-2"></i>Bayar</a>
+                                    @else
+                                        <a href="{{ route('debt_payment.index', $items->id) }}"
+                                            class="btn btn-sm btn-success"><i class="fa fa-eye mr-2"></i>Detail</a>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Data Laporan Jatuh Tempo Lunas</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Nomor Penjualan</th>
+                            <th>Tanggal</th>
+                            <th>Jatuh Tempo</th>
+                            <th>Jumlah</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($salesDebtLunas as $index => $items)
+                            <tr>
+                                <td>{{ $items->sale->customer->name ?? 'Umum' }}</td>
+                                <td>{{ $items->sale->number }}</td>
+                                <td>{{ $items->sale->created_at }}</td>
+                                <td>{{ $items->due_date }}</td>
+                                <td>{{ amountFormat($items->sale->grand_total) }}</td>
+                                <td>{{ statusDebt($items->status) }}</td>
+                                <td>
+                                    @if ($items->status === 1)
+                                        <a href="{{ route('debt_payment.index', $items->id) }}"
+                                            class="btn btn-sm btn-success"><i class="fa fa-money-bill mr-2"></i> Bayar</a>
                                     @else
                                         <a href="{{ route('debt_payment.index', $items->id) }}"
                                             class="btn btn-sm btn-success"><i class="fa fa-eye mr-2"></i>Detail</a>
@@ -62,6 +106,8 @@
     <script src="{{ asset('./assets/js/demo/datatables-demo.js') }}"></script>
     <script>
         $(document).ready(function() {
+
+            $("#dataTable2").DataTable();
             $('.btnDelete').on('click', function() {
                 var itemId = $(this).data('item-id');
                 Swal.fire({

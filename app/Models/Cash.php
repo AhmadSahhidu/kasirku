@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
-use App\Observers\CashFlowObserver;
+use App\Observers\CashObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CashFlow extends Model
+class Cash extends Model
 {
     use HasFactory;
+
+
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +26,8 @@ class CashFlow extends Model
         'amount',
         'note',
         'store_id',
-        'cash_id'
+        'tgl',
+        'user_id'
     ];
     protected $casts = [
         'id' => 'string',
@@ -32,11 +36,16 @@ class CashFlow extends Model
     public static function boot(): void
     {
         parent::boot();
-        self::observe(CashFlowObserver::class);
+        self::observe(CashObserver::class);
     }
 
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class, 'store_id', 'id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

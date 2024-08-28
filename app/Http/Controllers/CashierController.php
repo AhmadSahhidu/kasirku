@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helpers\FlashData;
 use App\Models\BalanceCustomer;
+use App\Models\BalanceStoreHistory;
+use App\Models\BalanceStores;
 use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Product;
@@ -18,9 +20,7 @@ use Illuminate\Support\Facades\DB;
 class CashierController extends Controller
 {
 
-    public function __construct(private CashierService $cashierService, private CashFlowService $cashFlowService)
-    {
-    }
+    public function __construct(private CashierService $cashierService, private CashFlowService $cashFlowService) {}
 
     public function index()
     {
@@ -31,16 +31,18 @@ class CashierController extends Controller
         }
         if ($roleuser === 'Super Admin') {
             $product = Product::with('store', 'supplier', 'brand', 'category')->get();
+
+            $customer = Customer::all();
         } else {
             $userStore = userStore();
             $stores = Store::where('name', $userStore)->first();
+            $customer = Customer::where('store_id', $stores->id)->get();
             $product = Product::with('store', 'supplier', 'brand', 'category')->where('store_id', $stores->id)->get();
         }
 
         $diskon = RequestDiskon::where(['sale_id' => null, 'user_id' => auth()->user()->id])->first();
         $cart = Cart::with('product', 'user')->get();
         $total = 0;
-        $customer = Customer::all();
         foreach ($cart as $items) {
             $total += $items->product->selling_price * $items->qty;
         }
@@ -158,6 +160,23 @@ class CashierController extends Controller
             $this->cashierService->saleInfo($sale, $request);
 
             $this->cashFlowService->cashFlowInCashier($sale);
+
+            $balanceStore = BalanceStores::where('store_id', $sale->store_id)->first();
+
+
+            BalanceStoreHistory::create([
+                'balance_store_id' => $balanceStore->id,
+                'amount' => $request->grand_total,
+                'balance_start' => $balanceStore->grand_total,
+                'balance_end' => $balanceStore->grand_total + $request->grand_total,
+                'type' => 4,
+                'tgl' => date('Ymd'),
+                'description' => 'Penjualan pada transaksi ' . $sale->number,
+            ]);
+            BalanceStores::where('id', $balanceStore->id)->update([
+                'amount_in_cashier' => $balanceStore->amount_in_cashier + $request->grand_total,
+                'grand_total' => $balanceStore->grand_total + $request->grand_total
+            ]);
 
             Cart::where('user_id', auth()->user()->id)->delete();
 

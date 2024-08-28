@@ -2,13 +2,16 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BalanceCustomerController;
+use App\Http\Controllers\BalanceStoreController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CashController;
 use App\Http\Controllers\CashierController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DebtPaymentController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RequestDiskonController;
 use App\Http\Controllers\RoleController;
@@ -140,6 +143,8 @@ Route::group(['middleware' => ['auth']], static function () {
     Route::prefix('report')->name('report.')->group(function () {
         Route::get('sales', [ReportController::class, 'reportSales'])->name('report_sales');
         Route::get('debt', [ReportController::class, 'reportDebt'])->name('report_debt');
+        Route::get('cash-flow', [ReportController::class, 'reportCashFlow'])->name('report_cash_flow');
+        Route::get('cash-out', [ReportController::class, 'reportCashOut'])->name('report_cash_out');
     });
 
     Route::prefix('roles')->name('roles.')->group(function () {
@@ -155,6 +160,20 @@ Route::group(['middleware' => ['auth']], static function () {
         Route::get('proses-auto-balance-customer', [DebtPaymentController::class, 'prosesAutoBalanceCustomer'])->name('proses_auto_balance_customer');
     });
 
+    Route::prefix('cash')->name('cash.')->group(function () {
+        Route::get('/', [CashController::class, 'index'])->name('index');
+        Route::get('create-cash', [CashController::class, 'create'])->name('create_cash');
+        Route::post('store-cash', [CashController::class, 'store'])->name('store_cash');
+        Route::get('edit-cash/{cashId}', [CashController::class, 'show'])->name('edit_cash');
+        Route::put('update-cash/{cashId}', [CashController::class, 'update'])->name('update_cash');
+        Route::get('delete-cash', [CashController::class, 'delete'])->name('delete_cash');
+
+        Route::get('balance-store', [BalanceStoreController::class, 'index'])->name('balance_store');
+        Route::get('balance-transaction', [BalanceStoreController::class, 'transaction'])->name('balance_transaction');
+        Route::post('proses-balance-transaction', [BalanceStoreController::class, 'prosesTransaction'])->name('proses_balance_transaction');
+    });
+
+
     Route::prefix('diskon')->name('diskon.')->group(function () {
         Route::get('confirm-diskon/{diskonId}', [RequestDiskonController::class, 'confirmDiskon'])->name('confirm_diskon');
         Route::post('store-diskon/{diskonId}', [RequestDiskonController::class, 'storeDiskon'])->name('store_diskon');
@@ -166,5 +185,17 @@ Route::group(['middleware' => ['auth']], static function () {
         Route::post('store', [UserController::class, 'store'])->name('store_users');
         Route::get('akses-user/{idUser}', [UserController::class, 'aksesUser'])->name('akses_user');
         Route::post('save-permission', [UserController::class, 'savePermission'])->name('save_permission');
+    });
+
+    Route::prefix('purchase')->name('purchase.')->group(function () {
+        Route::get('/', [PurchaseOrderController::class, 'index'])->name('index');
+        Route::post('proses-add-cart-order', [PurchaseOrderController::class, 'prosesAddCart'])->name('proses_add_cart_order');
+        Route::get('delete-list-cart-order/{cartId}', [PurchaseOrderController::class, 'deleteListCartOrder'])->name('delete_list_cart_order');
+        Route::post('proses-order', [PurchaseOrderController::class, 'prosesOrder'])->name('proses_order');
+
+        Route::get('list-order-pembelian', [PurchaseOrderController::class, 'listPurchaseOrder'])->name('list_order_pembelian');
+        Route::get('detail-order-pembelian/{purchaseId}', [PurchaseOrderController::class, 'detailPurchaseOrder'])->name('detail_order_pembelian');
+        Route::get('confirm-payment-order-pembelian/{purchaseId}', [PurchaseOrderController::class, 'confirmPaymentPurchaseOrder'])->name('konfirmasi_pembayaran_order_pembelian');
+        Route::post('proses-payment-order-pembelian', [PurchaseOrderController::class, 'prosesConfirmPayment'])->name('proses_confirm_payment');
     });
 });
