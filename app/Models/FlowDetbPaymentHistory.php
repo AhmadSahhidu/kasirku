@@ -2,28 +2,27 @@
 
 namespace App\Models;
 
-use App\Observers\SupplierObserver;
+use App\Observers\FlowDetbPaymentHistoryObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Supplier extends Model
+class FlowDetbPaymentHistory extends Model
 {
     use HasFactory;
 
-    public $incrementing = false;
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'phone',
-        'sales_name',
-        'sales_phone',
-        'address',
-        'store_id'
+        'flow_debt_id',
+        'tanggal',
+        'payment_method',
+        'amount',
+        'paid_debt',
+        'remaining_debt',
     ];
     protected $casts = [
         'id' => 'string',
@@ -32,11 +31,11 @@ class Supplier extends Model
     public static function boot(): void
     {
         parent::boot();
-        self::observe(SupplierObserver::class);
+        self::observe(FlowDetbPaymentHistoryObserver::class);
     }
 
-    public function store(): BelongsTo
+    public function debt(): BelongsTo
     {
-        return $this->belongsTo(Store::class, 'store_id', 'id');
+        return $this->belongsTo(FlowDebt::class, 'flow_debt_id', 'id');
     }
 }

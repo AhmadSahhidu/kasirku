@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Observers\PurchaseOrderCartObserver;
+use App\Observers\SubProductObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class PurchaseOrderCart extends Model
+class SubProduct extends Model
 {
     use HasFactory;
 
@@ -18,14 +18,9 @@ class PurchaseOrderCart extends Model
      */
     protected $fillable = [
         'product_id',
-        'supplier_id',
-        'name_product',
-        'size',
-        'category_id',
         'purchase_price',
         'selling_price',
-        'qty',
-        'user_id'
+        'stock'
     ];
     protected $casts = [
         'id' => 'string',
@@ -34,12 +29,7 @@ class PurchaseOrderCart extends Model
     public static function boot(): void
     {
         parent::boot();
-        self::observe(PurchaseOrderCartObserver::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        self::observe(SubProductObserver::class);
     }
 
     public function product(): BelongsTo

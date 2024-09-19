@@ -1,5 +1,6 @@
 @php
-    $aksesKasir = validationAkses('Kasir');
+    $aksesconfirmPayment = validationAkses('konfirmasi pembayaran');
+    $aksesPrint = validationAkses('cetak nota order pembelian');
     $roleuser = userRoleName();
 @endphp
 @extends('component.layout.app')
@@ -57,6 +58,7 @@
                                         <th>Number</th>
                                         <th>Supplier</th>
                                         <th>Total</th>
+                                        <th>Jenis Pembayaran</th>
                                         <th>Jatuh Tempo</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -69,19 +71,21 @@
                                             <td>{{ $items->number }}</td>
                                             <td>{{ $items->supplier->name }}</td>
                                             <td>{{ rupiahFormat($items->grand_total) }}</td>
-                                            <td>{{ $items->due_date }}</td>
+                                            <td>{{ $items->payment_method }}</td>
+                                            <td>{{ $items->due_date ?? '-' }}</td>
                                             <td><b
                                                     class="{{ statusPurchaseOrder($items->status) === 'Lunas' ? 'text-success' : 'text-danger' }}">{{ statusPurchaseOrder($items->status) }}</b>
                                             </td>
                                             <td>
                                                 <a href="{{ route('purchase.detail_order_pembelian', $items->id) }}"
                                                     class="btn btn-sm btn-primary"><i class="fa fa-eye mr-2"></i>Detail</a>
-                                                @if (statusPurchaseOrder($items->status) === 'Belum lunas')
+                                                @if ($items === '1' || $roleuser === 'Super Admin')
                                                     <a href="{{ route('purchase.konfirmasi_pembayaran_order_pembelian', $items->id) }}"
                                                         class="btn btn-sm btn-success"><i
                                                             class="fa fa-money-bill mr-2"></i>Pembayaran</a>
                                                 @endif
-
+                                                @if ($aksesPrint || $roleuser === 'Super Admin')
+                                                @endif
                                                 <a href="" class="btn btn-sm btn-warning"><i
                                                         class="fa fa-print mr-2"></i>Cetak</a>
                                             </td>

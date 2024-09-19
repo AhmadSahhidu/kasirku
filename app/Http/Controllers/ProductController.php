@@ -8,6 +8,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Store;
+use App\Models\SubProduct;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -19,11 +20,11 @@ class ProductController extends Controller
     {
         $roleuser = userRoleName();
         if ($roleuser === 'Super Admin') {
-            $product = Product::with('store', 'supplier', 'brand', 'category')->get();
+            $product = SubProduct::with('product')->get();
         } else {
             $userStore = userStore();
             $stores = Store::where('name', $userStore)->first();
-            $product = Product::with('store', 'supplier', 'brand', 'category')->where('store_id', $stores->id)->get();
+            $product = SubProduct::with('product')->where('store_id', $stores->id)->get();
         }
 
         return view('pages.product.index', compact('product'));
@@ -99,6 +100,20 @@ class ProductController extends Controller
         }
 
         return view('pages.product.edit', compact('supplier', 'brand', 'store', 'category', 'product'));
+    }
+
+    public function searchProduct(Request $request)
+    {
+        $product = Product::with('category')->where('supplier_id', $request->supplier)->where('name', 'LIKE', '%' . $request->product_name . '%')->get();
+
+        return response()->json(['data' => $product]);
+    }
+
+    public function searchCategory(Request $request)
+    {
+        $data = Category::where('name', 'LIKE', '%' . $request->category_name . '%')->get();
+
+        return response()->json(['data' => $data]);
     }
 
     public function update(Request $request, $idProduct)

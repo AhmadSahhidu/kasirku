@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\RequestDiskon;
 use App\Models\Sales;
 use App\Models\Store;
+use App\Models\SubProduct;
 use App\Services\CashFlowService;
 use App\Services\CashierService;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class CashierController extends Controller
             return redirect()->route('dashboard');
         }
         if ($roleuser === 'Super Admin') {
-            $product = Product::with('store', 'supplier', 'brand', 'category')->get();
+            $product = SubProduct::with('product')->get();
 
             $customer = Customer::all();
         } else {
@@ -52,8 +53,9 @@ class CashierController extends Controller
     public function storeCart(Request $request)
     {
         try {
-            $product = Product::where('number', $request->number)->first();
+            $product = SubProduct::where('id', $request->sub_product_id)->first();
             $generateNumberCart = date('YmdHis');
+            $stores = Store::first();
             $getCart = Cart::where('product_id', $product->id)->where('user_id', auth()->user()->id)->first();
             if ($getCart) {
                 $totalQty = $getCart->qty + $request->qty;
@@ -71,7 +73,7 @@ class CashierController extends Controller
                     'number' => $generateNumberCart,
                     'product_id' => $product->id,
                     'qty' => $request->qty,
-                    'store_id' => $product->store_id,
+                    'store_id' => $product->product->store_id ?? $stores->id,
                     'user_id' => auth()->user()->id,
                 ]);
             }
@@ -87,7 +89,7 @@ class CashierController extends Controller
     {
         try {
             $cart = Cart::where('id', $request->cart_id)->first();
-            $product = Product::where('id', $cart->product_id)->first();
+            $product = SubProduct::where('id', $cart->product_id)->first();
 
             $totalQtyCart = $request->qty;
             if ($totalQtyCart > $product->stock) {

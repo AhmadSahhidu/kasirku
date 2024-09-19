@@ -153,6 +153,8 @@
     @endif
     @php
         $aksesviewArusKas = validationAkses('view data arus kas');
+        $aksescreateOrderPembelian = validationAkses('create order pembelian');
+        $aksesviewOrderPembelian = validationAkses('view list order pembelian');
     @endphp
     @if ($aksesviewArusKas || $roleuser === 'Super Admin')
         <li class="nav-item @if (Route::is(['cash.index'])) active @endif">
@@ -173,11 +175,15 @@
                         <a class="collapse-item @if (Route::is(['cash.balance_store'])) active @endif"
                             href="{{ route('cash.balance_store') }}">Balance Store</a>
                     @endif
+                    @if ($aksesviewArusKas || $roleuser === 'Super Admin')
+                        <a class="collapse-item @if (Route::is(['debt.index'])) active @endif"
+                            href="{{ route('debt.index') }}">List Hutang</a>
+                    @endif
                 </div>
             </div>
         </li>
     @endif
-    @if ($aksesviewArusKas || $roleuser === 'Super Admin')
+    @if ($aksescreateOrderPembelian || $aksesviewOrderPembelian || $roleuser === 'Super Admin')
         <li class="nav-item @if (Route::is(['purchase.index'])) active @endif">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#purchase"
                 aria-expanded="true" aria-controls="collapseTwo">
@@ -188,11 +194,11 @@
                 aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Pembelian List :</h6>
-                    @if ($aksesviewArusKas || $roleuser === 'Super Admin')
+                    @if ($aksescreateOrderPembelian || $roleuser === 'Super Admin')
                         <a class="collapse-item @if (Route::is(['purchase.index'])) active @endif"
                             href="{{ route('purchase.index') }}">Pembelian Order</a>
                     @endif
-                    @if ($aksesviewArusKas || $roleuser === 'Super Admin')
+                    @if ($aksesviewOrderPembelian || $roleuser === 'Super Admin')
                         <a class="collapse-item @if (Route::is(['purchase.list_order_pembelian'])) active @endif"
                             href="{{ route('purchase.list_order_pembelian') }}">List Order Pembelian</a>
                     @endif
@@ -229,6 +235,10 @@
                     @if ($aksesviewReportLabaRugi || $roleuser === 'Super Admin')
                         <a class="collapse-item @if (Route::is(['report.report_cash_flow'])) active @endif"
                             href="{{ route('report.report_cash_flow') }}">Laporan Laba Rugi</a>
+                    @endif
+                    @if ($aksesviewReportLabaRugi || $roleuser === 'Super Admin')
+                        <a class="collapse-item @if (Route::is(['report.report_cash_flow'])) active @endif"
+                            href="{{ route('report.report_assets') }}">Laporan Assets</a>
                     @endif
                 </div>
             </div>

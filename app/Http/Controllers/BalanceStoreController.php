@@ -31,7 +31,7 @@ class BalanceStoreController extends Controller
             }
             $balance = BalanceStores::where('store_id', $request->store)->first();
             $store = Store::where('id', $request->store)->first();
-            $history = BalanceStoreHistory::where('balance_store_id', $balance->id)->get();
+            $history = BalanceStoreHistory::where('balance_store_id', $balance->id)->orderBy('tgl', 'DESC')->get();
         }
 
         return view('pages.balance-store.index', compact('history', 'balance', 'store'));

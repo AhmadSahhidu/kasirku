@@ -139,11 +139,13 @@
             @endphp
             @foreach ($sale->items as $item)
                 <tr>
-                    <td colspan="3"><b>{{ $item?->product?->name }} ({{ $item?->product?->size }})</b></td>
+                    <td colspan="3"><b>{{ $items->product->product->name }}
+                            ({{ $item?->product->product?->size }})
+                        </b></td>
                 </tr>
                 <tr>
                     <td colspan="3">
-                        <b> {{ $item->product?->brand?->name ?? '' }}</b>
+                        <b> {{ $item->product->product?->brand?->name ?? '' }}</b>
                     </td>
                 </tr>
                 <tr>

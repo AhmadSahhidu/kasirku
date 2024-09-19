@@ -1,5 +1,5 @@
 @php
-    $aksesKasir = validationAkses('Kasir');
+    $aksesconfirmPayment = validationAkses('konfirmasi pembayaran');
     $roleuser = userRoleName();
 @endphp
 @extends('component.layout.app')
@@ -26,7 +26,14 @@
                         <p>Total Pembelian :
                             <b>{{ rupiahFormat($purchaseOrder->grand_total) }}</b>
                         </p>
-                        <p>Jatuh Tempo : <b>{{ $purchaseOrder->due_date }}</b></p>
+
+                        <p>Jenis Pembayaran : <b>{{ $purchaseOrder->payment_method }}</b></p>
+                        @if ($purchaseOrder->payment_method !== 'cash')
+                            <p>Jatuh Tempo : <b>{{ $purchaseOrder->due_date }}</b></p>
+                        @endif
+                        <p>Status : <b
+                                class="{{ statusPurchaseOrder($purchaseOrder->status) === 'Lunas' ? 'text-success' : 'text-danger' }}">{{ statusPurchaseOrder($purchaseOrder->status) }}</b>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -68,8 +75,8 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $items->product->name }}</td>
-                                        <td>{{ $items->qty }}</td>
-                                        <td>{{ rupiahFormat($items->price_buy) }}</td>
+                                        <td>{{ $items->stock }}</td>
+                                        <td>{{ rupiahFormat($items->purchase_price) }}</td>
                                         <td>{{ rupiahFormat($items->grand_total) }}</td>
                                     </tr>
                                 @endforeach
@@ -80,52 +87,54 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Pembayaran</h6>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('purchase.proses_confirm_payment') }}" method="POST">
-                        @csrf
-                        @method('POST')
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label>Total Pembelian</label>
-                                <input type="text" value="{{ $purchaseOrder->grand_total }}"
-                                    name="amount_purchase_order" class="form-control" readonly />
-                                <input type="hidden" value="{{ $purchaseOrder->id }}" name="purchase_id"
-                                    class="form-control" readonly />
+        @if ($purchaseOrder->status === 1)
+            <div class="col-md-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Pembayaran</h6>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ route('purchase.proses_confirm_payment') }}" method="POST">
+                            @csrf
+                            @method('POST')
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Total Pembelian</label>
+                                    <input type="text" value="{{ $purchaseOrder->grand_total }}"
+                                        name="amount_purchase_order" class="form-control" readonly />
+                                    <input type="hidden" value="{{ $purchaseOrder->id }}" name="purchase_id"
+                                        class="form-control" readonly />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Sumber Dana</label>
+                                    <select class="form-control" name="sumber_dana">
+                                        <option value="cashier">Saldo Kasir -
+                                            {{ rupiahFormat($balanceStore->amount_in_cashier) }}
+                                        </option>
+                                        <option value="hand">Saldo ATM / Dipegang Sendiri -
+                                            {{ rupiahFormat($balanceStore->amount_in_hand) }}
+                                        </option>
+                                        <option value="customer">Saldo Deposit Customer -
+                                            {{ rupiahFormat($balanceStore->amount_customer_debt) }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Nominal</label>
+                                    <input type="number" name="amount" class="form-control" />
+                                </div>
+                                <div class="col-md-12 text-right">
+                                    <hr class="divider" />
+                                    <button type="submit" class="btn btn-success btn-sm"><i
+                                            class="fa fa-money-bill mr-2"></i>Proses
+                                        Pembayaran</button>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label>Sumber Dana</label>
-                                <select class="form-control" name="sumber_dana">
-                                    <option value="cashier">Saldo Kasir -
-                                        {{ rupiahFormat($balanceStore->amount_in_cashier) }}
-                                    </option>
-                                    <option value="hand">Saldo ATM / Dipegang Sendiri -
-                                        {{ rupiahFormat($balanceStore->amount_in_hand) }}
-                                    </option>
-                                    <option value="customer">Saldo Deposit Customer -
-                                        {{ rupiahFormat($balanceStore->amount_customer_debt) }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label>Nominal</label>
-                                <input type="number" name="amount" class="form-control" />
-                            </div>
-                            <div class="col-md-12 text-right">
-                                <hr class="divider" />
-                                <button type="submit" class="btn btn-success btn-sm"><i
-                                        class="fa fa-money-bill mr-2"></i>Proses
-                                    Pembayaran</button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     @endsection
     @push('style')
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />

@@ -61,16 +61,16 @@
                         @foreach ($product as $index => $items)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $items->number }}</td>
-                                <td>{{ $items->name }}</td>
-                                <td>{{ $items->size }}</td>
-                                <td>{{ $items->seri }}</td>
-                                <td>{{ $items->brand->name ?? '-' }}</td>
+                                <td>{{ $items->product->number }}</td>
+                                <td>{{ $items->product->name }}</td>
+                                <td>{{ $items->product->size }}</td>
+                                <td>{{ $items->product->seri }}</td>
+                                <td>{{ $items->product->brand->name ?? '-' }}</td>
                                 <td>{{ rupiahFormat($items->purchase_price) }}</td>
                                 <td>{{ rupiahFormat($items->selling_price) }}</td>
                                 <td>{{ $items->stock }}</td>
-                                <td>{{ $items->category->name ?? '-' }}</td>
-                                <td>{{ $items->supplier->name ?? '-' }}</td>
+                                <td>{{ $items->product->category->name ?? '-' }}</td>
+                                <td>{{ $items->product->supplier->name ?? '-' }}</td>
                                 <td>
                                     @if ($akseseditProduct || $roleuser === 'Super Admin')
                                         <a href="{{ route('product.edit_product', $items->id) }}"

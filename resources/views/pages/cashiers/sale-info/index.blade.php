@@ -30,7 +30,7 @@
                             @foreach ($sale->items as $index => $items)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
-                                    <td>{{ $items->product->name }}</td>
+                                    <td>{{ $items->product->product->name }}</td>
                                     <td>{{ $items->qty }}</td>
                                     <td>{{ rupiahFormat($items->product->selling_price) }}</td>
                                     <td>{{ rupiahFormat($items->product->selling_price * $items->qty) }}</td>

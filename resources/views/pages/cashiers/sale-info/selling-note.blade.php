@@ -196,14 +196,14 @@
                         </p>
                     </td>
                     <td style="border-collapse: collapse;">
-                        <p>{{ $item->product?->name }}
+                        <p>{{ $item->product->product?->name }}
                         </p>
                     </td>
                     <td style="border-collapse: collapse;">
-                        <p>{{ $item->product?->brand?->name }}</p>
+                        <p>{{ $item->product->product?->brand?->name ?? '-' }}</p>
                     </td>
                     <td style="border-collapse: collapse;">
-                        <p>{{ $item->product?->size }}</p>
+                        <p>{{ $item->product->product?->size }}</p>
                     </td>
                     <td colspan="{{ request('ppn') ? 2 : 0 }}" style="border-collapse: collapse;">
                         <p>{{ amountFormat($item->price) }}</p>

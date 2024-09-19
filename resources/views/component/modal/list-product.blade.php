@@ -27,17 +27,18 @@
                                 <tr style="font-size: 12px;">
                                     <td class="fs-6">{{ $index + 1 }}</td>
                                     {{-- <td>{{ $items->number }}</td> --}}
-                                    <td class="text-sm">{{ $items->name }}</td>
-                                    <td class="text-sm">{{ $items->size }}</td>
-                                    <td class="text-sm">{{ $items->seri }}</td>
-                                    <td class="text-sm">{{ $items->brand->name ?? '-' }}</td>
+                                    <td class="text-sm">{{ $items->product->name }}</td>
+                                    <td class="text-sm">{{ $items->product->size }}</td>
+                                    <td class="text-sm">{{ $items->product->seri }}</td>
+                                    <td class="text-sm">{{ $items->product->brand->name ?? '-' }}</td>
                                     <td class="text-sm">{{ rupiahFormat($items->selling_price) }}</td>
                                     <td class="text-sm">{{ $items->stock }}</td>
-                                    <td class="text-sm">{{ $items->category->name ?? '-' }}</td>
-                                    <td class="text-sm">{{ $items->supplier->name ?? '-' }}</td>
+                                    <td class="text-sm">{{ $items->product->category->name ?? '-' }}</td>
+                                    <td class="text-sm">{{ $items->product->supplier->name ?? '-' }}</td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-success btnSelect"
-                                            data-item-number="{{ $items->number }}">
+                                            data-item-number="{{ $items->product->number }}"
+                                            data-sub-product-id="{{ $items->id }}">
                                             Pilih
                                         </button>
 

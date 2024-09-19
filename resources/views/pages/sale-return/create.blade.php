@@ -125,7 +125,7 @@
                                         <input type="hidden" name="sale_item_id[]" value="{{ $item->id }}">
                                         <tr>
                                             <td>
-                                                <h5>{{ $item->product->name ?? '-' }}</h5>
+                                                <h5>{{ $item->product->product->name ?? '-' }}</h5>
                                             </td>
                                             <td>
                                                 <h5>{{ $item->qty ?? 0 }}</h5>

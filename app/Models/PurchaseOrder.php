@@ -25,6 +25,7 @@ class PurchaseOrder extends Model
         'due_date',
         'status',
         'store_id',
+        'payment_method',
         'user_id'
     ];
     protected $casts = [

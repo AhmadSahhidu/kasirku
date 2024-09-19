@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BalanceStores;
 use App\Models\Cash;
 use App\Models\CashFlow;
+use App\Models\FlowDebt;
 use App\Models\SaleDebtPayment;
 use App\Models\Sales;
 use App\Models\Store;
+use App\Models\SubProduct;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -44,6 +47,32 @@ class ReportController extends Controller
         }
 
         return view('pages.laporan.report-cash-flow', compact('cashOut', 'cashIn', 'totalCashIn', 'totalCashOut'));
+    }
+
+    public function reportAssets(Request $request)
+    {
+        // $roleUser = userRoleName();
+        // if ($roleUser === 'Super Admin') {
+        $store = Store::all();
+        $cushutang = 0;
+        $totalBalance = [];
+        $totalAssets = 0;
+        if (request('store')) {
+            $product = SubProduct::join('products', 'products.id', '=', 'sub_products.product_id')->where('products.store_id', request('store'))->get();
+            $totalAssets = 0;
+            foreach ($product as $items) {
+                $totalAssets += $items->selling_price * $items->stock;
+            }
+            $cushutang = FlowDebt::where('store_id', request('store'))->where('status', 'Belum Lunas')->sum('remaining_debt');
+            $totalBalance = BalanceStores::where('store_id', request('store'))->first();
+        } else {
+            $cushutang = 0;
+            $totalBalance = [];
+            $totalAssets = 0;
+        }
+
+
+        return view('pages.laporan.report-kekayaan', compact('totalAssets', 'cushutang', 'totalBalance', 'store'));
     }
 
     public function reportCashOut(Request $request)

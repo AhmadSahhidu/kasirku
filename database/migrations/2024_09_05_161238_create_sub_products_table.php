@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('purchase_order_items', function (Blueprint $table) {
+        Schema::create('sub_products', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('purchase_order_id')->nullable();
             $table->uuid('product_id')->nullable();
-            $table->integer('stock')->nullable();
-            $table->integer('purchase_price')->nullable();
-            $table->integer('selling_price')->nullable();
-            $table->string('grand_total')->nullable();
+            $table->integer('purchase_price')->default(0);
+            $table->integer('selling_price')->default(0);
+            $table->integer('stock')->default(0);
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchase_order_items');
+        Schema::dropIfExists('sub_products');
     }
 };

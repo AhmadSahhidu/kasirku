@@ -18,6 +18,7 @@ return new class extends Migration
             $table->uuid('supplier_id')->nullable();
             $table->integer('grand_total')->nullable();
             $table->date('due_date')->nullable();
+            $table->string('payment_method')->nullable();
             $table->integer('status')->default(1);
             $table->uuid('user_id')->nullable();
             $table->timestamps();

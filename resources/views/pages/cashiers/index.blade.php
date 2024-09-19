@@ -28,6 +28,7 @@
                             <div class="col-md-7">
                                 <label for="product_id">Produk</label>
                                 <div class="input-group">
+                                    <input type="hidden" id="sub-product-id" name="sub_product_id" />
                                     <input type="text" id="value-search" name="number"
                                         class="form-control bg-gray-200 border-0 small" aria-label="Search"
                                         aria-describedby="basic-addon2" required>
@@ -76,7 +77,7 @@
                             @foreach ($cart as $index => $items)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
-                                    <td>{{ $items->product->name }}</td>
+                                    <td>{{ $items->product->product->name }}</td>
                                     <td>{{ $items->qty }}</td>
                                     <td>{{ rupiahFormat($items->product->selling_price) }}</td>
                                     <td>{{ rupiahFormat($items->product->selling_price * $items->qty) }}</td>
@@ -216,7 +217,9 @@
                 });
                 $(".btnSelect").on('click', function() {
                     var number = $(this).data('item-number');
+                    var subProductid = $(this).data('sub-product-id');
                     $("#value-search").val(number);
+                    $("#sub-product-id").val(subProductid);
                     $("#listProduct").modal('hide');
                 });
 

@@ -2,33 +2,34 @@
 
 namespace App\Models;
 
-use App\Observers\ProductObserver;
+use App\Observers\FlowDebtObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Product extends Model
+class FlowDebt extends Model
 {
     use HasFactory;
 
     public $incrementing = false;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'number',
         'supplier_id',
-        'brand_id',
-        'category_id',
-        'size',
-        'seri',
-        'satuan',
-        'stock_minimum',
-        'store_id',
-        'user_id'
+        'no_invoice',
+        'amount',
+        'payment_method',
+        'due_date',
+        'paid_debt',
+        'remaining_debt',
+        'status',
+        'tanggal',
+        'store_id'
     ];
     protected $casts = [
         'id' => 'string',
@@ -37,26 +38,11 @@ class Product extends Model
     public static function boot(): void
     {
         parent::boot();
-        self::observe(ProductObserver::class);
-    }
-
-    public function store(): BelongsTo
-    {
-        return $this->belongsTo(Store::class, 'store_id', 'id');
+        self::observe(FlowDebtObserver::class);
     }
 
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class, 'supplier_id', 'id');
-    }
-
-    public function brand(): BelongsTo
-    {
-        return $this->belongsTo(Brand::class, 'brand_id', 'id');
-    }
-
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 }

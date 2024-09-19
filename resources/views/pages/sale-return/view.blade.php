@@ -128,7 +128,7 @@
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>
-                                        {{ $item->items->product->name ?? '-' }}
+                                        {{ $item->items->product->product->name ?? '-' }}
                                     </td>
                                     <td>
                                         {{ $item->qty ?? 0 }}

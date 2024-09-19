@@ -22,10 +22,7 @@ return new class extends Migration
             $table->string('seri');
             $table->string('size');
             $table->string('satuan');
-            $table->integer('stock');
             $table->integer('stock_minimum')->nullable();
-            $table->integer('purchase_price');
-            $table->integer('selling_price');
             $table->uuid('user_id');
             $table->timestamps();
         });

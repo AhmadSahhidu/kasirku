@@ -12,6 +12,8 @@ use App\Models\SaleItem;
 use App\Models\SaleItems;
 use App\Models\Sales;
 use App\Models\StockOpname;
+use App\Models\Store;
+use App\Models\SubProduct;
 use Exception;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
@@ -44,9 +46,10 @@ class CashierService
         $carts = Cart::with('product', 'user')
             ->where('user_id', auth()->user()->id)
             ->get();
+        $stores = Store::first();
         $generateNumberStockOpname = 'STP' . date('YmsHis');
         foreach ($carts as $cart) {
-            Product::where('id', $cart->product->id)->update([
+            SubProduct::where('id', $cart->product->id)->update([
                 'stock' => $cart->product->stock - $cart->qty
             ]);
             StockOpname::create([
@@ -58,7 +61,7 @@ class CashierService
                 'stock_after' => $cart->product->stock - $cart->qty,
                 'note' => 'Transaksi penjualan ' . $sale->number,
                 'user_id' => auth()->user()->id,
-                'store_id' => $cart->product->store_id,
+                'store_id' => $cart->product->product->store_id ?? $stores->id,
             ]);
         }
     }

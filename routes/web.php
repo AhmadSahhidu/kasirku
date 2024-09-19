@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DebtPaymentController;
+use App\Http\Controllers\FlowDebtController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\ReportController;
@@ -105,6 +106,8 @@ Route::group(['middleware' => ['auth']], static function () {
         Route::put('update-product/{idProduct}', [ProductController::class, 'update'])->name('update_product');
         Route::get('delete-product', [ProductController::class, 'delete'])->name('delete_product');
         Route::post('import-product', [ProductController::class, 'importProduct'])->name('import_product');
+        Route::post('search-product', [ProductController::class, 'searchProduct'])->name('search_product');
+        Route::post('search-category', [ProductController::class, 'searchCategory'])->name('search_category');
 
         Route::prefix('stock-opname')->name('stock_opname.')->group(function () {
             Route::get('/', [StockOpnameController::class, 'index'])->name('index');
@@ -144,6 +147,7 @@ Route::group(['middleware' => ['auth']], static function () {
         Route::get('sales', [ReportController::class, 'reportSales'])->name('report_sales');
         Route::get('debt', [ReportController::class, 'reportDebt'])->name('report_debt');
         Route::get('cash-flow', [ReportController::class, 'reportCashFlow'])->name('report_cash_flow');
+        Route::get('assets', [ReportController::class, 'reportAssets'])->name('report_assets');
         Route::get('cash-out', [ReportController::class, 'reportCashOut'])->name('report_cash_out');
     });
 
@@ -179,6 +183,15 @@ Route::group(['middleware' => ['auth']], static function () {
         Route::post('store-diskon/{diskonId}', [RequestDiskonController::class, 'storeDiskon'])->name('store_diskon');
     });
 
+    Route::prefix('debt')->name('debt.')->group(function () {
+        Route::get('/', [FlowDebtController::class, 'index'])->name('index');
+        Route::get('create', [FlowDebtController::class, 'create'])->name('create');
+        Route::post('searchSupplier', [FlowDebtController::class, 'searchSupplier'])->name('search_supplier');
+        Route::post('proses-hutang', [FlowDebtController::class, 'prosesHutang'])->name('proses_debt');
+        Route::get('detail-data-hutang/{debtId}', [FlowDebtController::class, 'show'])->name('detail_debt');
+        Route::post('proses-hutang/{flowdebtId}', [FlowDebtController::class, 'prosesPaymentDebt'])->name('proses_hutang');
+    });
+
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::get('create', [UserController::class, 'create'])->name('create_users');
@@ -197,5 +210,6 @@ Route::group(['middleware' => ['auth']], static function () {
         Route::get('detail-order-pembelian/{purchaseId}', [PurchaseOrderController::class, 'detailPurchaseOrder'])->name('detail_order_pembelian');
         Route::get('confirm-payment-order-pembelian/{purchaseId}', [PurchaseOrderController::class, 'confirmPaymentPurchaseOrder'])->name('konfirmasi_pembayaran_order_pembelian');
         Route::post('proses-payment-order-pembelian', [PurchaseOrderController::class, 'prosesConfirmPayment'])->name('proses_confirm_payment');
+        Route::post('validation-supplier-purchase-order', [PurchaseOrderController::class, 'validationSupplierPurchaseOrder'])->name('validation_supplier');
     });
 });

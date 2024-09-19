@@ -16,31 +16,54 @@
     </div>
     <div class="row">
         @if (!request('supplier'))
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Data Supplier</h6>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label for="product_id">Pilih Supplier</label>
-                                <select class="form-control" id="supplier_id">
-                                    <option selected disabled> -- </option>
-                                    @foreach ($supplier as $items)
-                                        <option value="{{ $items->id }}">{{ $items->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-12">
-                                <hr class="divider" />
-                                <div class="text-right">
-                                    <button type="button" id="btnSupplierSelect" class="btn btn-sm btn-success"><i
-                                            class="fa fa-file mr-2"></i>
-                                        Order Pembelian</button>
+                        <form action="{{ route('purchase.validation_supplier') }}" method="POST">
+                            @csrf
+                            @method('POST')
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Nama Supplier</label>
+                                        <input type="text" class="form-control" id="supplier_name" name="supplier_name"
+                                            autocomplete="off" />
+                                        <input type="hidden" class="form-control" name="supplier_id" />
+                                        <div class="col-md-12" style="position: relative; width: 100%;">
+                                            <ul id="supplier-list" class="dropdown-menu"
+                                                style="display:none; position: absolute; z-index: 1000;width: 100%;">
+                                                <!-- Pilihan dari AJAX akan ditampilkan di sini -->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>No. Handphone</label>
+                                        <input type="text" class="form-control" name="supplier_phone" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Alamat</label>
+                                        <input type="text" class="form-control" name="supplier_address" />
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <hr class="divider" />
+                                    <div class="text-right">
+                                        <button type="submit" class="btn btn-sm btn-success"><i
+                                                class="fa fa-file mr-2"></i>
+                                            Order Pembelian</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -57,23 +80,60 @@
                             @csrf
                             @method('POST')
                             <div class="row">
-                                <div class="col-md-7">
-                                    <label for="product_id">Produk</label>
-                                    <div class="input-group">
-                                        <input type="text" id="value-search" name="number"
-                                            class="form-control bg-gray-200 border-0 small" aria-label="Search"
-                                            aria-describedby="basic-addon2" required>
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" id="btnSearch" type="button">
-                                                <i class="fas fa-search fa-sm"></i> Pilih Produk
-                                            </button>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Nama Produk</label>
+                                        <input type="text" class="form-control" id="product_name" name="product_name"
+                                            autocomplete="off" />
+                                        <input type="hidden" class="form-control" name="product_id" />
+                                        <div class="col-md-12" style="position: relative; width: 100%;">
+                                            <ul id="product-list" class="dropdown-menu"
+                                                style="display:none; position: absolute; z-index: 1000;width: 100%;">
+                                                <!-- Pilihan dari AJAX akan ditampilkan di sini -->
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="qty">Qty</label>
-                                        <input type="number" class="form-control" name="qty" required />
+                                        <label>Ukuran</label>
+                                        <input type="text" class="form-control" id="size" name="size" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Kategori Produk</label>
+                                        <input type="text" class="form-control" id="category_name" name="category_name"
+                                            autocomplete="off" />
+                                        <input type="hidden" class="form-control" name="category_id" />
+                                        <div class="col-md-12" style="position: relative; width: 100%;">
+                                            <ul id="category-list" class="dropdown-menu"
+                                                style="display:none; position: absolute; z-index: 1000;width: 100%;">
+                                                <!-- Pilihan dari AJAX akan ditampilkan di sini -->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Harga Pembelian</label>
+                                        <input type="text" class="form-control" id="purchase_price"
+                                            name="purchase_price" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Harga Jual</label>
+                                        <input type="text" class="form-control" id="selling_price"
+                                            name="selling_price" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Qty</label>
+                                        <input type="text" class="form-control" id="qty" name="qty" />
+                                        <input type="hidden" value="{{ request('supplier') }}" class="form-control"
+                                            id="supplierId" name="supplierId" />
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -108,15 +168,15 @@
                                 @foreach ($cart as $index => $items)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ $items->product->name }}</td>
+                                        <td>{{ $items->name_product }}</td>
                                         <td>{{ $items->qty }}</td>
-                                        <td>{{ rupiahFormat($items->product->purchase_price) }}</td>
-                                        <td>{{ rupiahFormat($items->product->purchase_price * $items->qty) }}</td>
+                                        <td>{{ rupiahFormat($items->purchase_price) }}</td>
+                                        <td>{{ rupiahFormat($items->purchase_price * $items->qty) }}</td>
                                         <td>
 
                                             <a href="{{ route('purchase.delete_list_cart_order', $items->id) }}"
-                                                class="btn btn-sm btn-circle btn-danger" data-item-id="{{ $items->id }}"
-                                                title="Hapus Data"
+                                                class="btn btn-sm btn-circle btn-danger"
+                                                data-item-id="{{ $items->id }}" title="Hapus Data"
                                                 onclick="return confirmDeletion(event, '{{ $items->id }}');">
                                                 <i class="fa fa-trash"></i>
                                             </a>
@@ -156,8 +216,25 @@
                             <h6 class="text-primary font-weight-bold">Pembayaran</h6>
                             <hr class="divider" />
                             <div class="form-group">
-                                <label>Jatuh Tempo</label>
-                                <input type="date" class="form-control" name="due_date" required />
+                                <label>Jenis Pembayaran</label>
+                                <select class="form-control" id="payment_method" name="payment_method">
+                                    <option value="cash">Cash</option>
+                                    <option value="tempo">Tempo</option>
+                                </select>
+                                <input type="hidden" name="total" value="{{ $total }}" />
+                                <div id="tmp-balance" class="mt-2">
+                                    <label>Sumber Dana</label>
+                                    <select class="form-control" id="sumber_dana" name="sumber_dana">
+                                        <option value="cashier">Saldo kasir -
+                                            {{ rupiahFormat($balance->amount_in_cashier) }}</option>
+                                        <option value="hand">Saldo ATM / Sendiri -
+                                            {{ rupiahFormat($balance->amount_in_hand) }}</option>
+                                    </select>
+                                </div>
+                                <div id="tmp-due-date" style="display: none;" class="mt-2">
+                                    <label>Jatuh Tempo</label>
+                                    <input type="date" class="form-control" name="due_date" />
+                                </div>
                                 <input type="hidden" name="grand_total" value="{{ $total }}" />
                                 <input type="hidden" name="supplier_id" value="{{ request('supplier') }}" />
                             </div>
@@ -185,26 +262,193 @@
     <script>
         $(document).ready(function() {
             $("#supplier_id").select2();
-            $('#btnSupplierSelect').on('click', function() {
-                var supplierId = $("#supplier_id").val();
-                document.location.href = '{{ route('purchase.index') }}?supplier=' + supplierId
-            });
-            $("#btnSearch").on('click', function() {
-                $("#listProduct").modal('show');
-            });
-            $("#btnRequestDiskon").on('click', function() {
-                $('#requestDiskon').modal('show');
-            })
-            $("#closeModal").on('click', function() {
-                $("#listProduct").modal('hide');
-            });
-            $(".btnSelect").on('click', function() {
-                var number = $(this).data('item-number');
-                $("#value-search").val(number);
-                $("#listProduct").modal('hide');
+            $("#supplier_name").on('keyup', function() {
+                var supplier_name = $(this).val();
+
+                if (supplier_name.length >= 2) { // Cari saat input lebih dari 2 karakter
+                    $.ajax({
+                        url: "{{ route('debt.search_supplier') }}",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            supplier_name: supplier_name,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(res) {
+                            var supplierList = $("#supplier-list");
+                            supplierList.empty().hide(); // Kosongkan dan sembunyikan dropdown
+
+                            if (res.data.length > 0) {
+                                // Iterasi data dan buat item dropdown
+                                res.data.forEach(function(supplier) {
+                                    supplierList.append(
+                                        '<a class="dropdown-item" href="#" data-id="' +
+                                        supplier.id +
+                                        '" data-phone="' + supplier.phone +
+                                        '" data-address="' + supplier.address +
+                                        '"><li class="fa fa-circle fa-xs mr-2"></li>' +
+                                        supplier.name +
+                                        '</a>');
+                                });
+                                supplierList.show(); // Tampilkan dropdown
+                            }
+                        },
+                        error: function() {
+                            console.log("Error fetching supplier data.");
+                        }
+                    });
+                } else {
+                    $("#supplier-list").empty()
+                        .hide(); // Kosongkan dan sembunyikan dropdown jika input terlalu pendek
+                    $('input[name="supplier_id"]').val(''); // Kosongkan supplier_id jika input dihapus
+                    $('input[name="supplier_address"]').val(''); // Kosongkan supplier_id jika input dihapus
+                    $('input[name="supplier_phone"]').val(''); // Kosongkan supplier_id jika input dihapus
+                }
             });
 
+            $(document).on('click', '#supplier-list .dropdown-item', function(e) {
+                e.preventDefault();
+
+                var selectedSupplierName = $(this).text();
+                var selectedSupplierId = $(this).data('id');
+                var selectedSupplierPhone = $(this).data('phone');
+                var selectedSupplierAddress = $(this).data('address');
+
+                $('#supplier_name').val(selectedSupplierName); // Isi nilai input dengan nama yang dipilih
+                $('input[name="supplier_id"]').val(selectedSupplierId);
+                $('input[name="supplier_phone"]').val(selectedSupplierPhone);
+                $('input[name="supplier_address"]').val(selectedSupplierAddress);
+
+                $('#supplier-list').empty().hide(); // Sembunyikan dropdown setelah memilih
+            });
+
+            $("#product_name").on('keyup', function() {
+                var product_name = $(this).val();
+
+                if (product_name.length > 2) {
+                    $.ajax({
+                        url: "{{ route('product.search_product') }}",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            product_name: product_name,
+                            supplier: "{{ request('supplier') }}",
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(res) {
+                            var productList = $("#product-list");
+                            productList.empty().hide(); // Kosongkan dan sembunyikan dropdown
+
+                            if (res.data.length > 0) {
+                                // Iterasi data dan buat item dropdown
+                                res.data.forEach(function(product) {
+                                    productList.append(
+                                        '<a class="dropdown-item" href="#" data-id="' +
+                                        product.id +
+                                        '" data-size="' +
+                                        product.size +
+                                        '" data-categoryname="' +
+                                        product.category.name +
+                                        '" data-categoryid="' +
+                                        product.category_id +
+                                        '"><li class="fa fa-circle fa-xs mr-2"></li>' +
+                                        product.name + '</a>');
+                                });
+                                productList.show(); // Tampilkan dropdown
+                            }
+                        },
+                        error: function() {
+                            console.log("Error fetching supplier data.");
+                        }
+                    });
+                } else {
+                    $("#product-list").empty().hide();
+                    $('input[name="product_id"]').val('');
+                    $('input[name="category_name"]').val('');
+                    $('input[name="category_id"]').val('');
+                    $('input[name="size"]').val('');
+                }
+            });
+            $(document).on('click', '#product-list .dropdown-item', function(e) {
+                e.preventDefault();
+
+                var selectedSupplierName = $(this).text();
+                var selectedSupplierId = $(this).data('id');
+                var selectedSize = $(this).data('size');
+                var categoryName = $(this).data('categoryname');
+                var categoryId = $(this).data('categoryid');
+
+                $('#product_name').val(selectedSupplierName); // Isi nilai input dengan nama yang dipilih
+                $('input[name="product_id"]').val(selectedSupplierId);
+                $('input[name="category_name"]').val(categoryName);
+                $('input[name="category_id"]').val(categoryId);
+                $('input[name="size"]').val(selectedSize);
+
+                $('#product-list').empty().hide(); // Sembunyikan dropdown setelah memilih
+            });
+
+            $("#category_name").on('keyup', function() {
+                var category_name = $(this).val();
+
+                if (category_name.length > 2) {
+                    $.ajax({
+                        url: "{{ route('product.search_category') }}",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            category_name: category_name,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(res) {
+                            var categoryList = $("#category-list");
+                            categoryList.empty().hide(); // Kosongkan dan sembunyikan dropdown
+
+                            if (res.data.length > 0) {
+                                // Iterasi data dan buat item dropdown
+                                res.data.forEach(function(category) {
+                                    categoryList.append(
+                                        '<a class="dropdown-item" href="#" data-id="' +
+                                        category.id +
+                                        '"><li class="fa fa-circle fa-xs mr-2"></li>' +
+                                        category.name +
+                                        '</a>');
+                                });
+                                categoryList.show(); // Tampilkan dropdown
+                            }
+                        },
+                        error: function() {
+                            console.log("Error fetching supplier data.");
+                        }
+                    });
+                } else {
+                    $("#category-list").empty().hide();
+                }
+            });
+            $(document).on('click', '#category-list .dropdown-item', function(e) {
+                e.preventDefault();
+
+                var selectedName = $(this).text();
+                var selectedId = $(this).data('id');
+
+                $('#category_name').val(selectedName); // Isi nilai input dengan nama yang dipilih
+                $('input[name="category_id"]').val(selectedId);
+
+                $('#category-list').empty().hide(); // Sembunyikan dropdown setelah memilih
+            });
+
+            $("#payment_method").on('change', function() {
+                var payment = $(this).val();
+                if (payment === 'cash') {
+                    $("#tmp-due-date").hide();
+                    $("#tmp-balance").show();
+                } else {
+                    $("#tmp-balance").hide();
+                    $("#tmp-due-date").show();
+                }
+            });
         });
+
+
 
         function confirmDeletion(event, itemId) {
             const confirmed = confirm("Apakah Anda yakin ingin menghapus item ini?");
